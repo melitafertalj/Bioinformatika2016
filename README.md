@@ -1,6 +1,6 @@
 # Bioinformatika2016
 This is a github repository for a student project for Bioinformatics course at Faculty of Electrical Engineering and Computing (University of Zagreb, Croatia).
-The task of the project was to realize the Nong-Zhang-Chan algorithm. Each student has implemented the algorithm in another programming language.
+The task of the project was to realize the Nong-Zhang-Chan SA-DS algorithm. Each student has implemented the algorithm in another programming language.
 
 Official website of Bioinformatics course: https://www.fer.unizg.hr/predmet/bio
 
