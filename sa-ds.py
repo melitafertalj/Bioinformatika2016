@@ -70,6 +70,21 @@ def bucketSort(src, dest, S, t, n, n1, K, c, d):
         c[ord(S[j])] += 1
     return
 
+#compute start/end of buckets
+def getBuckets(S, bkt, n, K, end):
+    v_sum = 0
+    for i in xrange(K+1):
+        bkt[i] = 0
+    for i in xrange(n):
+        bkt[ord(S[i])] += 1
+    for i in xrange(K+1):
+        v_sum += bkt[i]
+        if end == 1:
+            bkt[i] = v_sum
+        else:
+            bkt[i] = v_sum - bkt[i]
+
+
 #recursive function - core of SA_DS algorithm
 def SA_DS(S, SA, n, K):
     d = 2
@@ -170,7 +185,7 @@ def SA_DS(S, SA, n, K):
     #filling in the gaps in SA
     i = n/2*2 - 1
     j = n - 1
-    while (i >= 0 & i >= 0):
+    while (i >= 0 and i >= 0):
         if SA[i] != -1:
             SA[j] = SA[i]
             j -= 1
@@ -178,17 +193,52 @@ def SA_DS(S, SA, n, K):
     s1 = SA[n-n1 :]
     
     #solving reduced problem
-    #print 'SA: ', SA
+    print 'SA: ', SA
     print 's1: ', s1
     #print 'SA1: ', SA1
-
     print'\n'
-    for i in xrange(n1):
-        s1[i] = chr(s1[i])
+    
+    #recursion
     if name < n1:
+        for i in xrange(n1):
+            s1[i] = chr(s1[i])
         SA_DS(s1, SA1, n1, name-1)
+    else:
+        for i in xrange(n1):
+            SA1[s1[i]] = i
+
+    SA[0:n1] = s1
+    SA[-n1:] = SA1
     
-    
+    print 'After recursion:'
+    print 'SA: ', SA
+    print 'SA1: ', SA1
+    print 's1: ', s1
+    dCriticalChars(S, t, n, s1, d)
+    SA[0:n1] = s1
+    bkt = [0] * (K+1)
+    getBuckets(S, bkt, n, K, 1)
+    for i in xrange(n):
+        j = SA[i] - 1
+        if j >= 0 and t[j] == 1 and t[j-1] == 0:
+            bkt[ord(S[j])] -= 1
+            SA[bkt[ord(S[j])]] = j   
+    getBuckets(S, bkt, n, K, 0)
+    for i in xrange(n):
+        j = SA[i] - 1
+        if j >= 0 and t[j] == 0:
+            print 'bkt: ', bkt[ord(S[j])]
+            print 'SA: ', SA[bkt[ord(S[j])]]
+            SA[bkt[ord(S[j])]] = j
+            bkt[ord(S[j])] += 1
+    getBuckets(S, bkt, n, K, 1)
+    for i in xrange(n - 1, -1, -1):
+        j = SA[i] - 1
+        if j >= 0 and t[j] == 1:
+            bkt[ord(S[j])] -= 1
+            SA[bkt[ord(S[j])]] = j
+
+    del bkt, t, SA1, s1
 
 
 #main
@@ -199,3 +249,5 @@ n = len(S)
 SA = [0] * n #result
 
 SA_DS(S, SA, n, K)
+
+print 'SA: ', SA
