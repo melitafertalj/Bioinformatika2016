@@ -88,7 +88,7 @@ def getBuckets(S, bkt, n, K, end):
 #recursive function - core of SA_DS algorithm
 def SA_DS(S, SA, n, K):
     d = 2
-    print 'Pocetno stanje'
+    print 'Beginning'
     print '-------------------------------'
     print 'S: ', S
     print 'SA: ', SA
@@ -106,8 +106,7 @@ def SA_DS(S, SA, n, K):
     SA1 = SA1[0:n1]
 
     print 'SA1: ', SA1
-    print '-------------------------------'
-
+    
     #bucket sorting
     s1 = SA[n-n1 :]
     print 's1: ', s1
@@ -128,8 +127,7 @@ def SA_DS(S, SA, n, K):
 
     SA[0:n1] = s1
     SA[-n1:] = SA1
-    #print 'SA: ', SA
-
+    
     #naming
     for i in xrange(n1-1, -1, -1):
         j = 2 * i
@@ -138,21 +136,14 @@ def SA_DS(S, SA, n, K):
     for i in xrange(2*(n1-1) + 3, n, 2):
         SA[i] = -1
 
-    #print 'SA: ', SA
-    #print 'SA1: ', SA1
-
     name = 0
     c = [-1, -1, -1, -1]
     for i in xrange(n1):
         pos = SA[2*i]
         diff = 0
-        #print 'I: ', i
-        #print 'C: ', c
-        #print 'S: ', S[pos : pos+4]
         for h in xrange(3):
             if pos+h < n:
                 if ord(S[pos+h]) != c[h]:
-                    #print 'Razlika1: ', ord(S[pos+h]), ' != ', c[h]
                     diff = 1
                     break
             else:
@@ -161,7 +152,6 @@ def SA_DS(S, SA, n, K):
                     break
         if pos+3 < n:
             if (ord(S[pos+3])*2 + t[pos+3]) != c[3]:
-                #print 'Razlika2: ', (ord(S[pos+3])*2 + t[pos+3]), ' != ', c[3]
                 diff = 1
         else:
             if c[3] != -1:
@@ -180,8 +170,7 @@ def SA_DS(S, SA, n, K):
         if (pos%2 == 0):
             pos -= 1
         SA[pos] = name - 1
-    #print 'SA: ', SA
-
+    
     #filling in the gaps in SA
     i = n/2*2 - 1
     j = n - 1
@@ -193,16 +182,17 @@ def SA_DS(S, SA, n, K):
     s1 = SA[n-n1 :]
     
     #solving reduced problem
-    print 'SA: ', SA
-    print 's1: ', s1
-    #print 'SA1: ', SA1
-    print'\n'
+    print 's1: ', s1, '\n'
     
     #recursion
     if name < n1:
+        print '\nRecursion:\n'
         for i in xrange(n1):
             s1[i] = chr(s1[i])
         SA_DS(s1, SA1, n1, name-1)
+        for i in xrange(n1):
+            s1[i] = ord(s1[i])
+        print '\nRecursion ended.\n\n'
     else:
         for i in xrange(n1):
             SA1[s1[i]] = i
@@ -210,44 +200,52 @@ def SA_DS(S, SA, n, K):
     SA[0:n1] = s1
     SA[-n1:] = SA1
     
-    print 'After recursion:'
-    print 'SA: ', SA
     print 'SA1: ', SA1
-    print 's1: ', s1
     dCriticalChars(S, t, n, s1, d)
-    SA[0:n1] = s1
+    SA[-n1:] = s1
     bkt = [0] * (K+1)
     getBuckets(S, bkt, n, K, 1)
-    for i in xrange(n):
-        j = SA[i] - 1
-        if j >= 0 and t[j] == 1 and t[j-1] == 0:
+    for i in xrange(n1):
+        SA1[i] = s1[SA1[i]]
+    SA[0:n1] = SA1
+    for i in xrange(n1, n):
+        SA[i] = -1
+    for i in xrange(n1-1, -1, -1):
+        j = SA[i]
+        SA[i] = -1
+        if j > 0 and t[j] == 1 and t[j-1] == 0:
             bkt[ord(S[j])] -= 1
-            SA[bkt[ord(S[j])]] = j   
+            SA[bkt[ord(S[j])]] = j
+    print 'Step 1: ', SA
     getBuckets(S, bkt, n, K, 0)
     for i in xrange(n):
         j = SA[i] - 1
         if j >= 0 and t[j] == 0:
-            print 'bkt: ', bkt[ord(S[j])]
-            print 'SA: ', SA[bkt[ord(S[j])]]
             SA[bkt[ord(S[j])]] = j
             bkt[ord(S[j])] += 1
+    print 'Step 2: ', SA
     getBuckets(S, bkt, n, K, 1)
     for i in xrange(n - 1, -1, -1):
         j = SA[i] - 1
         if j >= 0 and t[j] == 1:
             bkt[ord(S[j])] -= 1
             SA[bkt[ord(S[j])]] = j
-
+    print 'Step 3: ', SA
+    
     del bkt, t, SA1, s1
 
 
 #main
 K = 255
+
+# 'otorinolaringologija'
+#S = ('o', 't', 'o', 'r', 'i', 'n', 'o', 'l', 'a', 'r', 'i', 'n', 'g', 'o', 'l',
+#     'o', 'g', 'i', 'j', 'a', chr(0))
+
+# 'mmiissiissiippii'
 S = ('m', 'm', 'i', 'i', 's', 's', 'i', 'i', 's', 's', 'i', 'i', 'p', 'p', 'i',
      'i', chr(0))
+
 n = len(S)
 SA = [0] * n #result
-
 SA_DS(S, SA, n, K)
-
-print 'SA: ', SA
