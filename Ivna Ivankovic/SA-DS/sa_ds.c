@@ -13,16 +13,45 @@ typedef struct
     type_t type;
     bool lms_marker;
     bool d_critical_marker;
+} attribute_t;
+
+void initialize_attribute(attribute_t *attribute)
+{
+    attribute->type = s_type;
+    attribute->lms_marker = false;
+    attribute->d_critical_marker = false;
+}
+
+typedef struct
+{
+    attribute_t *attributes;
+    size_t length;
 } sort_data_t;
 
-void initialize_sort_data(sort_data_t *sort_data, size_t size)
+sort_data_t *create_sort_data(const size_t size)
 {
+    sort_data_t *sort_data = (sort_data_t *) malloc(sizeof(sort_data_t));
+
+    if (sort_data == NULL) return NULL;
+
     for (size_t i = 0; i < size; ++i)
     {
-        sort_data[i].type = s_type;
-        sort_data[i].lms_marker = false;
-        sort_data[i].d_critical_marker = false;
+        initialize_attribute(&sort_data->attributes[i]);
     }
+
+    return sort_data;
+}
+
+void free_sort_data(sort_data_t *sort_data)
+{
+    if (sort_data == NULL) return;
+
+    free(sort_data->attributes);
+}
+
+attribute_t *attributes_at(sort_data_t *sort_data, const size_t index)
+{
+    return &sort_data->attributes[index];
 }
 
 // Deduces if the symbol is L or S type.
@@ -62,9 +91,9 @@ void deduce_type(const char *string, sort_data_t *sort_data)
 
     for (size_t i = strlen(string) - 2; i >= 0; --i)
     {
-        if (string[i] < string[i + 1])  sort_data[i].type = s_type;
-        else if (string[i] == string[i + 1]) sort_data[i].type = sort_data[i + 1].type;
-        else sort_data[i].type = l_type;
+        if (string[i] < string[i + 1])  attributes_at(sort_data, i)->type = s_type;
+        else if (string[i] == string[i + 1]) attributes_at(sort_data, i)->type = attributes_at(sort_data, i + 1)->type;
+        else attributes_at(sort_data, i)->type = l_type;
     }
 }
 
@@ -72,9 +101,9 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data)
 {
     for (size_t i = 0; i < strlen(string) - 1; ++i)
     {
-        if (sort_data[i].type == l_type && sort_data[i + 1].type == s_type)
+        if (attributes_at(sort_data, i)->type == l_type && attributes_at(sort_data, i + 1)->type == s_type)
         {
-            sort_data[i + 1].lms_marker = true;
+            attributes_at(sort_data, i)->lms_marker = true;
             ++i; // No need to check the marked symbol.
         }
     }
@@ -89,7 +118,7 @@ size_t deduce_d_critical_markers(const char *string, const size_t d, sort_data_t
         bool is_lms = false;
         for (h = 2; h <= d + 1; ++h)
         {
-            if (sort_data[i + h].lms_marker)
+            if (attributes_at(sort_data, i + h)->lms_marker)
             {
                 is_lms = true;
                 break;
