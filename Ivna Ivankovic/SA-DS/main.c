@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
         report_error_and_exit("Insufficient resources for string allocation!", EXIT_FAILURE);
     }
 
-    if (read_input_string(input_file, string) == 0)
+    if (read_input_string(input_file, &string) == 0)
     {
         free(string);
         fclose(output_file);
@@ -62,11 +62,13 @@ int main(int argc, char *argv[])
 
     for (size_t i = 0; i < suffix_array->size; ++i)
     {
+        suffix_t *element = at_index(suffix_array, i);
+
 #ifdef DEBUG
-        printf("%s\n", at_index(suffix_array, i));
+        printf("%d %s\n", element->index, element->suffix);
 #endif // DEBUG
 
-        fprintf(output_file, "%s\n", at_index(suffix_array, i));
+        fprintf(output_file, "%d %s\n", element->index, element->suffix);
         if (ferror(output_file))
         {
             free_suffix_array(suffix_array);
