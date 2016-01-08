@@ -1,6 +1,6 @@
 #include "suffix_array.h"
 
-suffix_array_t *create_suffix_array(const size_t size)
+suffix_array_t *create_suffix_array(const int size)
 {
     suffix_array_t *sa = (suffix_array_t *) malloc(sizeof(suffix_array_t));
 
@@ -22,7 +22,7 @@ void free_suffix_array(suffix_array_t *suffix_array)
     free(suffix_array->elements);
 }
 
-suffix_t *suffix_at(suffix_array_t *suffix_array, const size_t index)
+suffix_t *suffix_at(suffix_array_t *suffix_array, const int index)
 {
     if (suffix_array == NULL) return NULL;
 

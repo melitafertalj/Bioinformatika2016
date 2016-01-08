@@ -3,7 +3,7 @@
 
 #include "bucket.h"
 
-bucket_t *create_bucket(char *substring, const size_t length)
+bucket_t *create_bucket(char *substring, const int length)
 {
     bucket_t *bucket = (bucket_t *) malloc(sizeof(bucket));
 

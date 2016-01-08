@@ -52,6 +52,8 @@ int main(int argc, char *argv[])
 
     fclose(input_file); // Don't need it anymore.
 
+    //char *string = "mmiissiissiippii$";
+
     suffix_array_t *suffix_array = create_suffix_array(strlen(string));
     if (suffix_array == NULL)
     {
@@ -62,7 +64,7 @@ int main(int argc, char *argv[])
 
     sa_ds(string, suffix_array, D_LEN);
 
-    for (size_t i = 0; i < suffix_array->size; ++i)
+    for (int i = 0; i < suffix_array->size; ++i)
     {
         suffix_t *element = suffix_at(suffix_array, i);
 
@@ -84,6 +86,7 @@ int main(int argc, char *argv[])
     // housekeeping
     free_suffix_array(suffix_array);
     free(suffix_array);
+    fclose(output_file);
     free(string);
 
     return EXIT_SUCCESS;

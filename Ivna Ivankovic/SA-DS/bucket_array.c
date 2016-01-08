@@ -2,7 +2,7 @@
 
 #include "bucket_array.h"
 
-bucket_array_t *create_bucket_array(const size_t size)
+bucket_array_t *create_bucket_array(const int size)
 {
     bucket_array_t *bucket_array = (bucket_array_t *) malloc(sizeof(bucket_array_t));
 
@@ -24,12 +24,12 @@ void free_bucket_array(bucket_array_t *bucket_array)
     free(bucket_array->buckets);
 }
 
-bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index)
+bucket_t *bucket_at(bucket_array_t *bucket_array, const int index)
 {
     return &bucket_array->buckets[index];
 }
 
-int adjust_bucket_array_size(bucket_array_t *bucket_array, const size_t new_size)
+int adjust_bucket_array_size(bucket_array_t *bucket_array, const int new_size)
 {
     if (bucket_array == NULL) return 0;
 
