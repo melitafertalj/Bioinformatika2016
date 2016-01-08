@@ -123,7 +123,7 @@ int sa_ds_impl(char *string, suffix_array_t *suffix_array)
 
     int indices_count = deduce_d_critical_markers(string, sort_data, d_critical_indices);
 
-    d_critical_indices = (int *) realloc(d_critical_indices, indices_count);
+    d_critical_indices = (int *) realloc(d_critical_indices, indices_count * sizeof(int));
     if (d_critical_indices == NULL)
     {
         free_sort_data(sort_data);
@@ -147,6 +147,8 @@ int sa_ds_impl(char *string, suffix_array_t *suffix_array)
         free(sort_data);
         return 0;
     }
+
+    sort_bucket_array(bucket_array);
 
     char *new_string = create_new_string(string, d_critical_indices, indices_count, bucket_array);
     if (new_string == NULL)
@@ -215,7 +217,7 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data)
     {
         if (attributes_at(sort_data, i)->type == l_type && attributes_at(sort_data, i + 1)->type == s_type)
         {
-            attributes_at(sort_data, i)->lms_marker = true;
+            attributes_at(sort_data, i + 1)->lms_marker = true;
             ++i; // No need to check the marked symbol.
         }
     }
@@ -224,7 +226,7 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data)
 int deduce_d_critical_markers(const char *string, sort_data_t *sort_data, int *d_critical_indices)
 {
     int j = 0;
-    for (int i = -1; i < strlen(string) - 1;)
+    for (int i = -1; i < (int) (strlen(string) - 1);)
     {
         int h = -1;
         bool is_lms = false;
@@ -258,7 +260,7 @@ int create_unique_buckets(char *string, int *d_critical_indices, int size, bucke
         bool is_duplicate = false;
         bucket_t bucket = { string + d_critical_indices[i], d_ + 2 };
 
-        for (int j = 0; j < size; ++j)
+        for (int j = 0; j < bucket_count; ++j)
         {
             if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
             {
@@ -288,7 +290,7 @@ char *create_new_string(char *string, int *d_critical_indices, int size, bucket_
         {
             if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
             {
-                string[i] = (char) j;
+                new_string[i] = (char) (j + '0');
                 break;
             }
         }

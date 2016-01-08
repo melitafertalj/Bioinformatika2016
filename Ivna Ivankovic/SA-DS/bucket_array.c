@@ -33,7 +33,7 @@ int adjust_bucket_array_size(bucket_array_t *bucket_array, const int new_size)
 {
     if (bucket_array == NULL) return 0;
 
-    bucket_array->buckets = (bucket_t *) realloc(bucket_array, new_size);
+    bucket_array->buckets = (bucket_t *) realloc(bucket_array->buckets, new_size * sizeof(bucket_t));
     bucket_array->size = new_size;
 
     return bucket_array->buckets != NULL;
