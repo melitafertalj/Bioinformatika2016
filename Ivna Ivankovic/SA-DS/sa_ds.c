@@ -4,7 +4,7 @@
 
 #include "sa_ds.h"
 
-#define D_LEN 2
+int d = 2;
 
 typedef enum { l_type = 0, s_type = 1 } type_t;
 
@@ -54,6 +54,62 @@ attribute_t *attributes_at(sort_data_t *sort_data, const size_t index)
     return &sort_data->attributes[index];
 }
 
+typedef struct
+{
+    char *substring;
+    size_t length;
+} bucket_t;
+
+bucket_t *create_bucket(char *substring, const size_t length)
+{
+    bucket_t *bucket = (bucket_t *) malloc(sizeof(bucket));
+
+    if (bucket == NULL) return NULL;
+
+    bucket->substring = substring;
+    bucket->length = length;
+
+    return bucket;
+}
+
+int bucket_compare(bucket_t *first, bucket_t *second)
+{
+    return strncmp(first->substring, second->substring, first->length);
+}
+
+typedef struct
+{
+    bucket_t *buckets;
+    size_t size;
+} bucket_array_t;
+
+bucket_array_t *create_bucket_array(const size_t size)
+{
+    bucket_array_t *bucket_array = (bucket_array_t *) malloc(sizeof(bucket_array_t));
+
+    if (bucket_array == NULL) return NULL;
+
+    bucket_array->buckets = (bucket_t *) calloc(size, sizeof(bucket_t));
+
+    if (bucket_array->buckets == NULL) { free(bucket_array); return NULL; }
+
+    bucket_array->size = size;
+
+    return bucket_array;
+}
+
+bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index)
+{
+    return &bucket_array->buckets[index];
+}
+
+void free_bucket_array(bucket_array_t *bucket_array)
+{
+    if (bucket_array == NULL) return;
+
+    free(bucket_array->buckets);
+}
+
 // Deduces if the symbol is L or S type.
 void deduce_type(const char *string, sort_data_t *sort_data);
 
@@ -61,7 +117,10 @@ void deduce_type(const char *string, sort_data_t *sort_data);
 void deduce_lms_markers(const char *string, sort_data_t *sort_data);
 
 // Deduces positions of d-critical markers.
-size_t deduce_d_critical_markers(const char *string, const size_t d, sort_data_t *sort_data, size_t *d_critical_indices);
+size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, size_t *d_critical_indices);
+
+// Creates unique buckets from d-critical substrings
+int create_unique_buckets(const char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array);
 
 // S is the input string;
 // SA is the output suffix array of S;
@@ -109,7 +168,7 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data)
     }
 }
 
-size_t deduce_d_critical_markers(const char *string, const size_t d, sort_data_t *sort_data, size_t *d_critical_indices)
+size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, size_t *d_critical_indices)
 {
     size_t j = 0;
     for (size_t i = -1; i < strlen(string) - 1;)
@@ -136,4 +195,36 @@ size_t deduce_d_critical_markers(const char *string, const size_t d, sort_data_t
         ++j;
     }
     return j;
+}
+
+int create_unique_buckets(const char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array)
+{
+    size_t bucket_count = 0;
+    for (size_t i = 0; i < size; ++i)
+    {
+        bool is_duplicate = false;
+        bucket_t *bucket = create_bucket(string + d_critical_indices[i], d + 2);
+
+        if (bucket == NULL) return 0;
+
+        for (size_t j = 0; j < size; ++j)
+        {
+            if (bucket_compare(bucket, bucket_at(bucket_array, j)) == 0)
+            {
+                is_duplicate = true;
+                break;
+            }
+        }
+
+        if (is_duplicate)
+        {
+            free(bucket);
+            continue;
+        }
+
+        bucket_array->buckets[bucket_count].substring = bucket->substring;
+        bucket_array->buckets[bucket_count].length = bucket->length;
+
+        free(bucket);
+    }
 }
