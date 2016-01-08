@@ -7,7 +7,7 @@
 #include "bucket.h"
 #include "bucket_array.h"
 
-int d = 2;
+int d_ = 2;
 
 typedef enum { l_type = 0, s_type = 1 } type_t;
 
@@ -57,6 +57,9 @@ attribute_t *attributes_at(sort_data_t *sort_data, const size_t index)
     return &sort_data->attributes[index];
 }
 
+// Implementation of SA-DS
+int sa_ds_impl(char *string, suffix_array_t *suffix_array);
+
 // Deduces if the symbol is L or S type.
 void deduce_type(const char *string, sort_data_t *sort_data);
 
@@ -66,8 +69,14 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data);
 // Deduces positions of d-critical markers.
 size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, size_t *d_critical_indices);
 
-// Creates unique buckets from d-critical substrings
+// Creates unique buckets from d-critical substrings.
 int create_unique_buckets(char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array);
+
+// Creates the shortend string.
+char *create_new_string(char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array);
+
+// Induces SA (first_array) from SA1 (second_array).
+int induce_suffix_array(suffix_array_t *first_array, suffix_array_t *second_array);
 
 // S is the input string;
 // SA is the output suffix array of S;
@@ -84,9 +93,102 @@ int create_unique_buckets(char *string, size_t *d_critical_indices, size_t size,
 //    SA-DS(S1, SA1);
 // Induce SA from SA1
 // Return
-int sa_ds(const char *string, suffix_array_t *suffix_array)
+int sa_ds(char *string, suffix_array_t *suffix_array, int d)
 {
-    return 0;
+    if (string == NULL) return 0;
+    if (suffix_array == NULL) return 0;
+
+    d_ = d;
+
+    return sa_ds_impl(string, suffix_array);
+}
+
+int sa_ds_impl(char *string, suffix_array_t *suffix_array)
+{
+    sort_data_t *sort_data = create_sort_data(strlen(string));
+    if (sort_data == NULL) return 0;
+
+    deduce_type(string, sort_data);
+    deduce_lms_markers(string, sort_data);
+
+    size_t *d_critical_indices = (size_t *) malloc(strlen(string) * sizeof(size_t));
+    if (d_critical_indices == NULL)
+    {
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    size_t indices_count = deduce_d_critical_markers(string, sort_data, d_critical_indices);
+
+    d_critical_indices = (size_t *) realloc(d_critical_indices, indices_count);
+    if (d_critical_indices == NULL)
+    {
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    bucket_array_t *bucket_array = create_bucket_array(indices_count);
+    if (bucket_array == NULL)
+    {
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    if (!create_unique_buckets(string, d_critical_indices, indices_count, bucket_array))
+    {
+        free_bucket_array(bucket_array);
+        free(bucket_array);
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    char *new_string = create_new_string(string, d_critical_indices, indices_count, bucket_array);
+    if (new_string == NULL)
+    {
+        free_bucket_array(bucket_array);
+        free(bucket_array);
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    size_t new_size = strlen(new_string);
+    suffix_array_t *new_suffix_array = create_suffix_array(new_size);
+    if (new_size == bucket_array->size)
+    {
+        for (size_t i = 0; i < new_size; ++i)
+        {
+            *suffix_at(new_suffix_array, new_string[i]) = i;
+        }
+    }
+    else if (!sa_ds_impl(new_string, new_suffix_array))
+    {
+        free_suffix_array(new_suffix_array);
+        free(new_suffix_array);
+        free(new_string);
+        free_bucket_array(bucket_array);
+        free(bucket_array);
+        free_sort_data(sort_data);
+        free(sort_data);
+        return 0;
+    }
+
+    int result = induce_suffix_array(suffix_array, new_suffix_array);
+
+    // housekeeping
+    free_suffix_array(new_suffix_array);
+    free(new_suffix_array);
+    free(new_string);
+    free_bucket_array(bucket_array);
+    free(bucket_array);
+    free_sort_data(sort_data);
+    free(sort_data);
+
+    return result;
 }
 
 void deduce_type(const char *string, sort_data_t *sort_data)
@@ -122,7 +224,7 @@ size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, siz
     {
         size_t h = -1;
         bool is_lms = false;
-        for (h = 2; h <= d + 1; ++h)
+        for (h = 2; h <= d_ + 1; ++h)
         {
             if (attributes_at(sort_data, i + h)->lms_marker)
             {
@@ -133,11 +235,11 @@ size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, siz
 
         if (j == 0 && !is_lms)
         {
-            i += d;
+            i += d_;
             continue;
         }
 
-        i += is_lms ? h : d;
+        i += is_lms ? h : d_;
         d_critical_indices[j] = i;
         ++j;
     }
@@ -150,30 +252,49 @@ int create_unique_buckets(char *string, size_t *d_critical_indices, size_t size,
     for (size_t i = 0; i < size; ++i)
     {
         bool is_duplicate = false;
-        bucket_t *bucket = create_bucket(string + d_critical_indices[i], d + 2);
-
-        if (bucket == NULL) return 0;
+        bucket_t bucket = { string + d_critical_indices[i], d_ + 2 };
 
         for (size_t j = 0; j < size; ++j)
         {
-            if (bucket_compare(bucket, bucket_at(bucket_array, j)) == 0)
+            if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
             {
                 is_duplicate = true;
                 break;
             }
         }
 
-        if (is_duplicate)
-        {
-            free(bucket);
-            continue;
-        }
+        if (is_duplicate) { continue; }
 
-        bucket_array->buckets[bucket_count].substring = bucket->substring;
-        bucket_array->buckets[bucket_count].length = bucket->length;
-
-        free(bucket);
+        bucket_array->buckets[bucket_count++] = bucket;
     }
 
-    return 1;
+    return adjust_bucket_array_size(bucket_array, bucket_count);
+}
+
+char *create_new_string(char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array)
+{
+    char *new_string = (char *) malloc(size * sizeof(char));
+    if (new_string == NULL) return NULL;
+
+    for (size_t i = 0; i < size; ++i)
+    {
+        bucket_t bucket = { string + d_critical_indices[i], d_ + 2 };
+
+        for (size_t j = 0; j < bucket_array->size; ++j)
+        {
+            if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
+            {
+                string[i] = (char) j;
+                break;
+            }
+        }
+    }
+    new_string[size] = '\0';
+
+    return new_string;
+}
+
+int induce_suffix_array(suffix_array_t *first_array, suffix_array_t *second_array)
+{
+    return 0;
 }

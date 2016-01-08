@@ -18,4 +18,6 @@ bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index);
 
 int adjust_bucket_array_size(bucket_array_t *bucket_array, const size_t new_size);
 
+void sort_bucket_array(bucket_array_t *bucket_array);
+
 #endif // BUCKET_ARRAY_H

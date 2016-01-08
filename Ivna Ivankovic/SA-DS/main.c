@@ -7,6 +7,8 @@
 
 #define DEBUG
 
+#define D_LEN 2
+
 #define INITIAL_SIZE 1000
 
 // Reports the error to stderr and terminates the program.
@@ -58,17 +60,17 @@ int main(int argc, char *argv[])
         report_error_and_exit("Unable to create initial suffix array!", EXIT_FAILURE);
     }
 
-    sa_ds(string, suffix_array);
+    sa_ds(string, suffix_array, D_LEN);
 
     for (size_t i = 0; i < suffix_array->size; ++i)
     {
-        suffix_t *element = at_index(suffix_array, i);
+        suffix_t *element = suffix_at(suffix_array, i);
 
 #ifdef DEBUG
-        printf("%d %s\n", element->index, element->suffix);
+        printf("%d %s\n", *element, string + *element);
 #endif // DEBUG
 
-        fprintf(output_file, "%d %s\n", element->index, element->suffix);
+        fprintf(output_file, "%d %s\n", *element, string + *element);
         if (ferror(output_file))
         {
             free_suffix_array(suffix_array);

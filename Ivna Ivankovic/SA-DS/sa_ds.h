@@ -3,6 +3,6 @@
 #include "suffix_array.h"
 
 // O(n) suffix array construction
-int sa_ds(const char *string, suffix_array_t *suffix_array);
+int sa_ds(char *string, suffix_array_t *suffix_array, int d);
 
 #endif // SA_DS_H

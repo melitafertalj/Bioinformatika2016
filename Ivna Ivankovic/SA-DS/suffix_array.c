@@ -22,7 +22,7 @@ void free_suffix_array(suffix_array_t *suffix_array)
     free(suffix_array->elements);
 }
 
-suffix_t *at_index(suffix_array_t *suffix_array, const size_t index)
+suffix_t *suffix_at(suffix_array_t *suffix_array, const size_t index)
 {
     if (suffix_array == NULL) return NULL;
 
