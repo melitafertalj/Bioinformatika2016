@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "suffix_array.h"
 
 suffix_array_t *create_suffix_array(const int size)
@@ -7,8 +9,9 @@ suffix_array_t *create_suffix_array(const int size)
     if (sa == NULL)  return NULL;
 
     sa->elements = (suffix_t *) calloc(size, sizeof(suffix_t));
-
     if (sa->elements == NULL) return NULL;
+
+    memset(sa->elements, -1, size * sizeof(suffix_t));
 
     sa->size = size;
 
