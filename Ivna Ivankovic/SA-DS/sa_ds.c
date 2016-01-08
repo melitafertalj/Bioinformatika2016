@@ -4,6 +4,9 @@
 
 #include "sa_ds.h"
 
+#include "bucket.h"
+#include "bucket_array.h"
+
 int d = 2;
 
 typedef enum { l_type = 0, s_type = 1 } type_t;
@@ -52,62 +55,6 @@ void free_sort_data(sort_data_t *sort_data)
 attribute_t *attributes_at(sort_data_t *sort_data, const size_t index)
 {
     return &sort_data->attributes[index];
-}
-
-typedef struct
-{
-    char *substring;
-    size_t length;
-} bucket_t;
-
-bucket_t *create_bucket(char *substring, const size_t length)
-{
-    bucket_t *bucket = (bucket_t *) malloc(sizeof(bucket));
-
-    if (bucket == NULL) return NULL;
-
-    bucket->substring = substring;
-    bucket->length = length;
-
-    return bucket;
-}
-
-int bucket_compare(bucket_t *first, bucket_t *second)
-{
-    return strncmp(first->substring, second->substring, first->length);
-}
-
-typedef struct
-{
-    bucket_t *buckets;
-    size_t size;
-} bucket_array_t;
-
-bucket_array_t *create_bucket_array(const size_t size)
-{
-    bucket_array_t *bucket_array = (bucket_array_t *) malloc(sizeof(bucket_array_t));
-
-    if (bucket_array == NULL) return NULL;
-
-    bucket_array->buckets = (bucket_t *) calloc(size, sizeof(bucket_t));
-
-    if (bucket_array->buckets == NULL) { free(bucket_array); return NULL; }
-
-    bucket_array->size = size;
-
-    return bucket_array;
-}
-
-bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index)
-{
-    return &bucket_array->buckets[index];
-}
-
-void free_bucket_array(bucket_array_t *bucket_array)
-{
-    if (bucket_array == NULL) return;
-
-    free(bucket_array->buckets);
 }
 
 // Deduces if the symbol is L or S type.
