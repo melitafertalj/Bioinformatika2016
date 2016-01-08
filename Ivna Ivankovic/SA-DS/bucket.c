@@ -1,3 +1,6 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include "bucket.h"
 
 bucket_t *create_bucket(char *substring, const size_t length)

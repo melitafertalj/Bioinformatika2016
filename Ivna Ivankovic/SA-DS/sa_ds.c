@@ -67,7 +67,7 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data);
 size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, size_t *d_critical_indices);
 
 // Creates unique buckets from d-critical substrings
-int create_unique_buckets(const char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array);
+int create_unique_buckets(char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array);
 
 // S is the input string;
 // SA is the output suffix array of S;
@@ -144,7 +144,7 @@ size_t deduce_d_critical_markers(const char *string, sort_data_t *sort_data, siz
     return j;
 }
 
-int create_unique_buckets(const char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array)
+int create_unique_buckets(char *string, size_t *d_critical_indices, size_t size, bucket_array_t *bucket_array)
 {
     size_t bucket_count = 0;
     for (size_t i = 0; i < size; ++i)
@@ -174,4 +174,6 @@ int create_unique_buckets(const char *string, size_t *d_critical_indices, size_t
 
         free(bucket);
     }
+
+    return 1;
 }

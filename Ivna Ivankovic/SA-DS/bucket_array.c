@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "bucket_array.h"
 
 bucket_array_t *create_bucket_array(const size_t size)
@@ -15,14 +17,23 @@ bucket_array_t *create_bucket_array(const size_t size)
     return bucket_array;
 }
 
-bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index)
-{
-    return &bucket_array->buckets[index];
-}
-
 void free_bucket_array(bucket_array_t *bucket_array)
 {
     if (bucket_array == NULL) return;
 
     free(bucket_array->buckets);
+}
+
+bucket_t *bucket_at(bucket_array_t *bucket_array, const size_t index)
+{
+    return &bucket_array->buckets[index];
+}
+
+int adjust_bucket_array_size(bucket_array_t *bucket_array, const size_t new_size)
+{
+    if (bucket_array == NULL) return 0;
+
+    bucket_array->buckets = (bucket_t *) realloc(bucket_array, new_size);
+
+    return bucket_array->buckets != NULL;
 }
