@@ -241,13 +241,11 @@ void deduce_type(const char *string, sort_data_t *sort_data)
     //int length = strlen(string);
     //sort_data[length - 1].type = s_type;
 
-    for (int i = strlen(string) - 2;; --i)
+    for (int i = strlen(string) - 2; i >= 0; --i)
     {
         if (string[i] < string[i + 1])  attributes_at(sort_data, i)->type = s_type;
         else if (string[i] == string[i + 1]) attributes_at(sort_data, i)->type = attributes_at(sort_data, i + 1)->type;
         else attributes_at(sort_data, i)->type = l_type;
-
-        if (i == 0) break;
     }
 }
 
