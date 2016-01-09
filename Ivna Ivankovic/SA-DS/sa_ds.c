@@ -347,7 +347,7 @@ int_array_t *get_buckets(char *string, int size, bool is_end)
 
     for (int i = 0; i < strlen(string); ++i)
     {
-        (*element_at(buckets, string[i] - '0'))++;
+        (*element_at(buckets, string[i]))++;
     }
 
     int sum = 0;
@@ -367,25 +367,15 @@ int induce_suffix_array(char *string, char *new_string, sort_data_t *sort_data, 
     int_array_t *buckets = get_buckets(string, K, true);
     if (buckets == NULL) return 0;
 
-    for (int i = 0; i < strlen(new_string); ++i)
+    for (int i = second_array->size - 1; i >= 0; --i)
     {
-        suffix_t *suffix = suffix_at(second_array, i);
+        int index = d_critical_indices[*suffix_at(second_array, i)];
 
-        *suffix = d_critical_indices[*suffix];
-    }
-
-    for (int i = strlen(new_string); i < strlen(string); ++i) { *suffix_at(first_array, i) = -1; }
-
-    for (int i = strlen(new_string) - 1; i >= 0; --i)
-    {
-        int j = *suffix_at(first_array, i);
-        *suffix_at(first_array, i) = -1;
-
-        if (j > 0 && attributes_at(sort_data, j)->lms_marker)
+        if (attributes_at(sort_data, index)->lms_marker)
         {
-            element_t *element = element_at(buckets, (int) string[j]);
-            --(*element);
-            *suffix_at(first_array, *element) = j;
+            element_t *bucket = element_at(buckets, string[index]);
+            --(*bucket);
+            *suffix_at(first_array, *bucket) = index;
         }
     }
 
@@ -393,12 +383,15 @@ int induce_suffix_array(char *string, char *new_string, sort_data_t *sort_data, 
     buckets = get_buckets(string, K, false);
     if (buckets == NULL) return 0;
 
-    for (int i = 0; i < strlen(string); ++i)
+    for (int i = 0; i < first_array->size; ++i)
     {
-        int j = *suffix_at(first_array, i) - 1;
-        if (j >= 0 && attributes_at(sort_data, j)->type == s_type)
+        suffix_t *suffix = suffix_at(first_array, i);
+        if (*suffix < 0) { continue; }
+
+        int j = *suffix - 1;
+        if (attributes_at(sort_data, j)->type == l_type)
         {
-            element_t *element = element_at(buckets, (int) string[j]);
+            element_t *element = element_at(buckets, string[j]);
             *suffix_at(first_array, *element) = j;
             ++(*element);
         }
@@ -408,12 +401,15 @@ int induce_suffix_array(char *string, char *new_string, sort_data_t *sort_data, 
     buckets = get_buckets(string, K, true);
     if (buckets == NULL) return 0;
 
-    for (int i = strlen(string) - 1; i >= 0; --i)
+    for (int i = first_array->size - 1; i >= 0; --i)
     {
-        int j = *suffix_at(first_array, i) - 1;
-        if (j >= 0 && attributes_at(sort_data, j)->type == l_type)
+        suffix_t *suffix = suffix_at(first_array, i);
+        if (*suffix < 0) { continue; }
+
+        int j = *suffix - 1;
+        if (j >= 0 && attributes_at(sort_data, j)->type == s_type)
         {
-            element_t *element = element_at(buckets, (int) string[j]);
+            element_t *element = element_at(buckets, string[j]);
             --(*element);
             *suffix_at(first_array, *element) = j;
         }
