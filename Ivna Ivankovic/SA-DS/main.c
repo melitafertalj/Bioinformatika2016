@@ -9,7 +9,7 @@
 
 #define D_LEN 2
 
-#define INITIAL_SIZE 1000
+#define BLOCK_SIZE 1000
 
 // Reports the error to stderr and terminates the program.
 void report_error_and_exit(const char *message, const int value);
@@ -34,14 +34,7 @@ int main(int argc, char *argv[])
         report_error_and_exit("Unable to open input file!", EXIT_FAILURE);
     }
 
-    char *string = (char *) calloc(INITIAL_SIZE, sizeof(char));
-    if (string == NULL)
-    {
-        fclose(output_file);
-        fclose(input_file);
-        report_error_and_exit("Insufficient resources for string allocation!", EXIT_FAILURE);
-    }
-
+    char *string = NULL;
     if (read_input_string(input_file, &string) == 0)
     {
         free(string);
@@ -51,8 +44,6 @@ int main(int argc, char *argv[])
     }
 
     fclose(input_file); // Don't need it anymore.
-
-    //char *string = "mmiissiissiippii$";
 
     suffix_array_t *suffix_array = create_suffix_array(strlen(string));
     if (suffix_array == NULL)
@@ -64,15 +55,16 @@ int main(int argc, char *argv[])
 
     sa_ds(string, suffix_array, D_LEN);
 
+    string[strlen(string) - 2] = '$'; // Replace the virtual sentinel with a visible character
     for (int i = 0; i < suffix_array->size; ++i)
     {
         suffix_t *element = suffix_at(suffix_array, i);
 
 #ifdef DEBUG
-        printf("%d %s\n", *element, string + *element);
+        printf("%-10d %s\n", *element, string + *element);
 #endif // DEBUG
 
-        fprintf(output_file, "%d %s\n", *element, string + *element);
+        fprintf(output_file, "%d ", *element);
         if (ferror(output_file))
         {
             free_suffix_array(suffix_array);
@@ -82,6 +74,7 @@ int main(int argc, char *argv[])
             report_error_and_exit("IO error happend while saving results!", EXIT_FAILURE);
         }
     }
+    fprintf(output_file, "\n");
 
     // housekeeping
     free_suffix_array(suffix_array);
@@ -98,7 +91,33 @@ void report_error_and_exit(const char *message, const int value)
     exit(value);
 }
 
-int read_input_string(FILE * file, char ** string)
+int read_input_string(FILE *file, char **string)
 {
-    return 0;
+    int block_count = 0;
+    int length = 0;
+    int allocated_size = 0;
+    char *local = NULL;
+    while (!feof(file))
+    {
+        char symbol;
+        fread(&symbol, sizeof(symbol), 1, file);
+        if (ferror(file)) { free(local); return 0; }
+
+        if (symbol == '\n') { continue; } //New lines are ignored.
+
+        if (allocated_size == length)
+        {
+            local = realloc(local, (block_count + 1) * BLOCK_SIZE * sizeof(char));
+            if (local == NULL) { return 0; }
+
+            ++block_count;
+        }
+
+        local[length] = symbol;
+        ++length;
+    }
+    local[length] = 1; //Virtual sentinel. This symbol won't appear in the input
+    local[length] = '\0';
+    *string = local;
+    return 1;
 }

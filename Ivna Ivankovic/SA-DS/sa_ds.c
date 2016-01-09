@@ -108,7 +108,7 @@ char *create_new_string(char *string, int *d_critical_indices, int size, bucket_
 int_array_t *get_buckets(char *string, int size, bool end);
 
 // Induces SA (first_array) from SA1 (second_array).
-int induce_suffix_array(char *string, char *new_string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array);
+int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array);
 
 // S is the input string;
 // SA is the output suffix array of S;
@@ -221,7 +221,7 @@ int sa_ds_impl(char *string, suffix_array_t *suffix_array)
         return 0;
     }
 
-    int result = induce_suffix_array(string, new_string, sort_data, d_critical_indices, suffix_array, new_suffix_array);
+    int result = induce_suffix_array(string, sort_data, d_critical_indices, suffix_array, new_suffix_array);
 
     // housekeeping
     free_suffix_array(new_suffix_array);
@@ -253,7 +253,7 @@ void deduce_type(const char *string, sort_data_t *sort_data)
 
 void deduce_lms_markers(const char *string, sort_data_t *sort_data)
 {
-    for (int i = 0; i < strlen(string) - 1; ++i)
+    for (int i = 0; i < (int) strlen(string) - 1; ++i)
     {
         if (attributes_at(sort_data, i)->type == l_type && attributes_at(sort_data, i + 1)->type == s_type)
         {
@@ -345,7 +345,7 @@ int_array_t *get_buckets(char *string, int size, bool is_end)
     int_array_t *buckets = create_int_array(size);
     if (buckets == NULL) return NULL;
 
-    for (int i = 0; i < strlen(string); ++i)
+    for (int i = 0; i < (int) strlen(string); ++i)
     {
         (*element_at(buckets, string[i]))++;
     }
@@ -362,7 +362,7 @@ int_array_t *get_buckets(char *string, int size, bool is_end)
     return buckets;
 }
 
-int induce_suffix_array(char *string, char *new_string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array)
+int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array)
 {
     int_array_t *buckets = get_buckets(string, K, true);
     if (buckets == NULL) return 0;
