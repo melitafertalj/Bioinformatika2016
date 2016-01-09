@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
     sa_ds(string, suffix_array, D_LEN);
 
-    string[strlen(string) - 2] = '$'; // Replace the virtual sentinel with a visible character
+    string[strlen(string) - 1] = '$'; // Replace the virtual sentinel with a visible character
     for (int i = 0; i < suffix_array->size; ++i)
     {
         suffix_t *element = suffix_at(suffix_array, i);
@@ -99,13 +99,15 @@ int read_input_string(FILE *file, char **string)
     char *local = NULL;
     while (!feof(file))
     {
+        printf("%d\n", length);
         char symbol;
         fread(&symbol, sizeof(symbol), 1, file);
         if (ferror(file)) { free(local); return 0; }
 
         if (symbol == '\n') { continue; } //New lines are ignored.
 
-        if (allocated_size == length)
+        ++length;
+        if (length >= allocated_size)
         {
             local = realloc(local, (block_count + 1) * BLOCK_SIZE * sizeof(char));
             if (local == NULL) { return 0; }
@@ -113,11 +115,10 @@ int read_input_string(FILE *file, char **string)
             ++block_count;
         }
 
-        local[length] = symbol;
-        ++length;
+        local[length - 1] = symbol;
     }
     local[length] = 1; //Virtual sentinel. This symbol won't appear in the input
-    local[length] = '\0';
+    local[length + 1] = '\0';
     *string = local;
     return 1;
 }
