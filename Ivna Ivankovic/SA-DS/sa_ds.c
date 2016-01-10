@@ -4,88 +4,13 @@
 
 #include "sa_ds.h"
 
-#include "bucket.h"
 #include "bucket_array.h"
+#include "sort_data.h"
+#include "int_array.h"
 
 #define K CHAR_MAX
 
 int d_ = 2;
-
-typedef enum { l_type = 0, s_type = 1 } type_t;
-
-typedef struct
-{
-    type_t type;
-    bool lms_marker;
-    bool d_critical_marker;
-} attribute_t;
-
-void initialize_attribute(attribute_t *attribute)
-{
-    attribute->type = s_type;
-    attribute->lms_marker = false;
-    attribute->d_critical_marker = false;
-}
-
-typedef struct
-{
-    attribute_t *attributes;
-    int length;
-} sort_data_t;
-
-sort_data_t *create_sort_data(const int size)
-{
-    sort_data_t *sort_data = (sort_data_t *) malloc(sizeof(sort_data_t));
-    if (sort_data == NULL) return NULL;
-
-    sort_data->attributes = (attribute_t *) malloc(size * sizeof(attribute_t));
-    if (sort_data->attributes == NULL) { free(sort_data); return 0; }
-
-    for (int i = 0; i < size; ++i)
-    {
-        initialize_attribute(&sort_data->attributes[i]);
-    }
-
-    return sort_data;
-}
-
-void free_sort_data(sort_data_t *sort_data)
-{
-    if (sort_data == NULL) return;
-
-    free(sort_data->attributes);
-}
-
-attribute_t *attributes_at(sort_data_t *sort_data, const int index)
-{
-    return &sort_data->attributes[index];
-}
-
-typedef int element_t;
-
-typedef struct
-{
-    element_t *elements;
-    int size;
-} int_array_t;
-
-int_array_t *create_int_array(const int size)
-{
-    int_array_t *int_array = (int_array_t *) malloc(sizeof(int_array_t));
-    if (int_array == NULL) return NULL;
-
-    int_array->elements = (int *) calloc(size, sizeof(int));
-    if (int_array->elements == NULL) { free(int_array); return NULL; }
-
-    int_array->size = size;
-
-    return int_array;
-}
-
-element_t *element_at(int_array_t *int_array, const int index)
-{
-    return &int_array->elements[index];
-}
 
 // Implementation of SA-DS
 int sa_ds_impl(char *string, suffix_array_t *suffix_array);

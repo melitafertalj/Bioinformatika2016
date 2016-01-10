@@ -19,15 +19,15 @@ int read_input_string(FILE *file, char **string);
 // First parameter is the input file, second is the output file
 int main(int argc, char *argv[])
 {
-    if (argc != 3) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
+    //if (argc != 3) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
 
-    FILE *input_file = fopen(argv[1], "r");
+    FILE *input_file = fopen("clo1.txt", "r");
     if (input_file == NULL)
     {
         report_error_and_exit("Unable to open input file!", EXIT_FAILURE);
     }
 
-    FILE *output_file = fopen(argv[2], "w");
+    FILE *output_file = fopen("a.txt", "w");
     if (output_file == NULL)
     {
         fclose(input_file);

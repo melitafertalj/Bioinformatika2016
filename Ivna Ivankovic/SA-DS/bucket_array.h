@@ -2,7 +2,15 @@
 
 #define BUCKET_ARRAY_H
 
-#include "bucket.h"
+typedef struct
+{
+    char *substring;
+    int length;
+} bucket_t;
+
+bucket_t *create_bucket(char *substring, const int length);
+
+int bucket_compare(bucket_t *first, bucket_t *second);
 
 typedef struct
 {
