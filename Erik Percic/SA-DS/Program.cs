@@ -11,7 +11,6 @@ namespace SA_DS
         static int d = 2;
         static void Main(string[] args)
         {
-            
             var S = "mmiissiissiippii$";
             S = S.ToUpper();
 
@@ -91,20 +90,27 @@ namespace SA_DS
         {
             // creates P1 array of pointers to d-critical chars
             // RULES:
-            // - S[i] is d-critical only if it is a LMS or if  S[i-d] is d-critical and no char in between is critical
-            // - S[i] is LMS if S[i] is S type (true) and S[i-1] is L type (false)
+            // - S[i] is d-critical only if it is a LMS [S[i] is S type (true) and S[i-1] is L type (false)] 
+            // or if  S[i-d] is d-critical and no char in between is critical
             // - first char is not critical, last char is critical
             // - if S[i] is critical, S[i-1] and S[i+1] are not
             // - d>=2, in this implementation d=2
 
             List<int> P1 = new List<int>();
 
-            for (int i = t.Count-1; i > 0; i--)
+            for (int i = 1; i < t.Count; i++)
             {
-                if (t[i] == true||(P1[0]==i+d && t[i-1]!=true))
-                // if S[i] is critical or the last added d-critical char was S[i+d] (we compare indices)
+                if (t[i] == true && t[i-1]==false)
+                // if S[i] is d-critical
                 {
-                    P1.Insert(0, i);
+                    P1.Add(i);
+                }else if (P1.Count != 0)
+                {
+                    // S[i-d] is a d-critical char and S[i+1] is not LMS
+                    if (P1.Last() == i - d && !(t[i]==false && t[i+1]==true))
+                    {
+                        P1.Add(i);
+                    }
                 }
             }
             return P1;
