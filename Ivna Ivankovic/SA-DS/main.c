@@ -5,8 +5,6 @@
 #include "suffix_array.h"
 #include "sa_ds.h"
 
-#define DEBUG
-
 #define D_LEN 2
 
 #define BLOCK_SIZE 1000
@@ -19,7 +17,7 @@ int read_input_string(FILE *file, int_array_t **string);
 // First parameter is the input file, second is the output file
 int main(int argc, char *argv[])
 {
-    if (argc != 3) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
+    if (!(argc == 3 || argc == 4)) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
 
     FILE *input_file = fopen(argv[1], "r");
     if (input_file == NULL)
@@ -31,13 +29,24 @@ int main(int argc, char *argv[])
     if (output_file == NULL)
     {
         fclose(input_file);
-        report_error_and_exit("Unable to open input file!", EXIT_FAILURE);
+        report_error_and_exit("Unable to open output file!", EXIT_FAILURE);
+    }
+
+    FILE *suffix_file = NULL;
+    if (argc == 4)
+    {
+        suffix_file = fopen(argv[3], "w");
+        if (suffix_file == NULL)
+        {
+            fclose(output_file);
+            fclose(input_file);
+            report_error_and_exit("Unable to open suffix output file!", EXIT_FAILURE);
+        }
     }
 
     int_array_t *string = NULL;
     if (read_input_string(input_file, &string) == 0)
     {
-        free(string);
         fclose(output_file);
         fclose(input_file);
         report_error_and_exit("IO error happend while reading the string!", EXIT_FAILURE);
@@ -48,6 +57,7 @@ int main(int argc, char *argv[])
     suffix_array_t *suffix_array = create_suffix_array(string->size);
     if (suffix_array == NULL)
     {
+        free_int_array(string);
         free(string);
         fclose(output_file);
         report_error_and_exit("Unable to create initial suffix array!", EXIT_FAILURE);
@@ -60,23 +70,27 @@ int main(int argc, char *argv[])
     {
         suffix_t *element = suffix_at(suffix_array, i);
 
-#ifdef DEBUG
-        printf("%-10d", *element);
-        for (int j = *element; j < string->size; ++j) { printf("%c", string->elements[j]); }
-        printf("\n");
-#endif // DEBUG
+        if (suffix_file != NULL)
+        {
+            fprintf(suffix_file, "%-10d", *element);
+            for (int j = *element; j < string->size; ++j) { fprintf(suffix_file, "%c", string->elements[j]); }
+            fprintf(suffix_file, "\n");
+        }
 
         fprintf(output_file, "%d ", *element);
         if (ferror(output_file))
         {
             free_suffix_array(suffix_array);
             free(suffix_array);
+            free_int_array(string);
             free(string);
             fclose(output_file);
             report_error_and_exit("IO error happend while saving results!", EXIT_FAILURE);
         }
     }
     fprintf(output_file, "\n");
+
+    if (argc == 4) fclose(suffix_file);
 
     // housekeeping
     free_suffix_array(suffix_array);
