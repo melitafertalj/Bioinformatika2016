@@ -1,74 +1,48 @@
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
 #include "sa_ds.h"
 
-#include "bucket_array.h"
-#include "sort_data.h"
-#include "int_array.h"
+#include <stdint.h>
 
-#define K CHAR_MAX
+#include "bucket_array.h"
+#include "int_array.h"
+#include "sort_data.h"
+
+#define INPUT_RANGE UINT16_MAX
 
 int d_ = 2;
 
-// Implementation of SA-DS
-int sa_ds_impl(char *string, suffix_array_t *suffix_array);
+int sa_ds_int_impl(int_array_t *string, suffix_array_t *suffix_array);
 
-// Deduces if the symbol is L or S type.
-void deduce_type(const char *string, sort_data_t *sort_data);
+void deduce_type(int_array_t *string, sort_data_t *sort_data);
 
-// Deduces positions of lms markers.
-void deduce_lms_markers(const char *string, sort_data_t *sort_data);
+void deduce_lms_markers(int_array_t *string, sort_data_t *sort_data);
 
-// Deduces positions of d-critical markers.
-int deduce_d_critical_markers(const char *string, sort_data_t *sort_data, int *d_critical_indices);
+int_array_t *deduce_d_critical_markers(int_array_t *string, sort_data_t *sort_data);
 
-// Creates unique buckets from d-critical substrings.
-int create_unique_buckets(char *string, int *d_critical_indices, int size, bucket_array_t *bucket_array);
+bucket_array_t *deduce_suffix_buckets(int_array_t *string, int_array_t *d_critical_indices);
 
-// Creates the shortend string.
-char *create_new_string(char *string, int *d_critical_indices, int size, bucket_array_t *bucket_array);
+int_array_t *create_new_string(int_array_t *string, int_array_t *d_critical_indices, bucket_array_t *bucket_array);
 
-int_array_t *get_buckets(char *string, int size, bool end);
+int induce_suffix_array(int_array_t *string, sort_data_t *sort_data, int_array_t *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array);
 
-// Induces SA (first_array) from SA1 (second_array).
-int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array);
-
-// S is the input string;
-// SA is the output suffix array of S;
-// t: array[0..n - 1] of boolean
-// P1, S1: array[0..n1] of integer; -> n1 = ||S1||
-// B: array [0..||Sum(S)|| - 1] of integer
-// Scan S once to classify all the characters as L - or S - type into t;
-// Scan t once to find all the d-critical substrings in S into P1;
-// Bucket sort all the d-critical substrings using P1 and B;
-// Name each d-critical substring in S by its bucket index to get a new shortened string S1;
-// if ||S1|| = Number of Buckets:
-//    Directly compute SA1 from S1;
-// else
-//    SA-DS(S1, SA1);
-// Induce SA from SA1
-// Return
-int sa_ds(char *string, suffix_array_t *suffix_array, int d)
+int sa_ds(int_array_t *string, suffix_array_t * suffix_array, int d)
 {
     if (string == NULL) return 0;
     if (suffix_array == NULL) return 0;
 
     d_ = d;
 
-    return sa_ds_impl(string, suffix_array);
+    return sa_ds_int_impl(string, suffix_array);
 }
 
-int sa_ds_impl(char *string, suffix_array_t *suffix_array)
+int sa_ds_int_impl(int_array_t *string, suffix_array_t *suffix_array)
 {
-    sort_data_t *sort_data = create_sort_data(strlen(string));
+    sort_data_t *sort_data = create_sort_data(string->size);
     if (sort_data == NULL) return 0;
 
     deduce_type(string, sort_data);
     deduce_lms_markers(string, sort_data);
 
-    int *d_critical_indices = (int *) malloc(strlen(string) * sizeof(int));
+    int_array_t *d_critical_indices = deduce_d_critical_markers(string, sort_data);
     if (d_critical_indices == NULL)
     {
         free_sort_data(sort_data);
@@ -76,71 +50,50 @@ int sa_ds_impl(char *string, suffix_array_t *suffix_array)
         return 0;
     }
 
-    int indices_count = deduce_d_critical_markers(string, sort_data, d_critical_indices);
+    bucket_array_t *bucket_array = deduce_suffix_buckets(string, d_critical_indices);
 
-    d_critical_indices = (int *) realloc(d_critical_indices, indices_count * sizeof(int));
-    if (d_critical_indices == NULL)
-    {
-        free_sort_data(sort_data);
-        free(sort_data);
-        return 0;
-    }
-
-    bucket_array_t *bucket_array = create_bucket_array(indices_count);
-    if (bucket_array == NULL)
-    {
-        free_sort_data(sort_data);
-        free(sort_data);
-        return 0;
-    }
-
-    if (!create_unique_buckets(string, d_critical_indices, indices_count, bucket_array))
-    {
-        free_bucket_array(bucket_array);
-        free(bucket_array);
-        free_sort_data(sort_data);
-        free(sort_data);
-        return 0;
-    }
-
-    sort_bucket_array(bucket_array);
-
-    char *new_string = create_new_string(string, d_critical_indices, indices_count, bucket_array);
+    int_array_t *new_string = create_new_string(string, d_critical_indices, bucket_array);
     if (new_string == NULL)
     {
         free_bucket_array(bucket_array);
         free(bucket_array);
+        free_int_array(d_critical_indices);
+        free(d_critical_indices);
         free_sort_data(sort_data);
         free(sort_data);
         return 0;
     }
 
-    int new_size = strlen(new_string);
-    suffix_array_t *new_suffix_array = create_suffix_array(new_size);
+    suffix_array_t *new_suffix_array = create_suffix_array(new_string->size);
     if (new_suffix_array == NULL)
     {
+        free_int_array(new_string);
         free(new_string);
         free_bucket_array(bucket_array);
         free(bucket_array);
+        free_int_array(d_critical_indices);
+        free(d_critical_indices);
         free_sort_data(sort_data);
         free(sort_data);
         return 0;
     }
 
-    if (new_size == bucket_array->size)
+    if (new_string->size == bucket_array->size)
     {
-        for (int i = 0; i < new_size; ++i)
+        for (int i = 0; i < new_string->size; ++i)
         {
-            *suffix_at(new_suffix_array, new_string[i] - '0') = i;
+            *suffix_at(new_suffix_array, new_string->elements[i]) = i;
         }
     }
-    else if (!sa_ds_impl(new_string, new_suffix_array))
+    else if (!sa_ds_int_impl(new_string, new_suffix_array))
     {
         free_suffix_array(new_suffix_array);
         free(new_suffix_array);
         free(new_string);
         free_bucket_array(bucket_array);
         free(bucket_array);
+        free_int_array(d_critical_indices);
+        free(d_critical_indices);
         free_sort_data(sort_data);
         free(sort_data);
         return 0;
@@ -154,29 +107,31 @@ int sa_ds_impl(char *string, suffix_array_t *suffix_array)
     free(new_string);
     free_bucket_array(bucket_array);
     free(bucket_array);
+    free_int_array(d_critical_indices);
+    free(d_critical_indices);
     free_sort_data(sort_data);
     free(sort_data);
 
     return result;
 }
 
-void deduce_type(const char *string, sort_data_t *sort_data)
+void deduce_type(int_array_t *string, sort_data_t *sort_data)
 {
     // Last symbol is default initalized as S-type
     //int length = strlen(string);
     //sort_data[length - 1].type = s_type;
 
-    for (int i = strlen(string) - 2; i >= 0; --i)
+    for (int i = string->size - 2; i >= 0; --i)
     {
-        if (string[i] < string[i + 1])  attributes_at(sort_data, i)->type = s_type;
-        else if (string[i] == string[i + 1]) attributes_at(sort_data, i)->type = attributes_at(sort_data, i + 1)->type;
+        if (string->elements[i] < string->elements[i + 1])  attributes_at(sort_data, i)->type = s_type;
+        else if (string->elements[i] == string->elements[i + 1]) attributes_at(sort_data, i)->type = attributes_at(sort_data, i + 1)->type;
         else attributes_at(sort_data, i)->type = l_type;
     }
 }
 
-void deduce_lms_markers(const char *string, sort_data_t *sort_data)
+void deduce_lms_markers(int_array_t *string, sort_data_t *sort_data)
 {
-    for (int i = 0; i < (int) strlen(string) - 1; ++i)
+    for (int i = 0; i < string->size - 1; ++i)
     {
         if (attributes_at(sort_data, i)->type == l_type && attributes_at(sort_data, i + 1)->type == s_type)
         {
@@ -186,10 +141,13 @@ void deduce_lms_markers(const char *string, sort_data_t *sort_data)
     }
 }
 
-int deduce_d_critical_markers(const char *string, sort_data_t *sort_data, int *d_critical_indices)
+int_array_t *deduce_d_critical_markers(int_array_t *string, sort_data_t *sort_data)
 {
+    int_array_t *d_critical_indices = create_int_array(string->size);
+    if (d_critical_indices == NULL) return NULL;
+
     int j = 0;
-    for (int i = -1; i < (int) (strlen(string) - 1);)
+    for (int i = -1; i < string->size - 1;)
     {
         int h = -1;
         bool is_lms = false;
@@ -209,23 +167,31 @@ int deduce_d_critical_markers(const char *string, sort_data_t *sort_data, int *d
         }
 
         i += is_lms ? h : d_;
-        d_critical_indices[j] = i;
+        d_critical_indices->elements[j] = i;
         ++j;
     }
-    return j;
+
+    d_critical_indices->elements = (int *) realloc(d_critical_indices->elements, j * sizeof(int));
+    if (d_critical_indices->elements == NULL) { free(d_critical_indices); return NULL; }
+    d_critical_indices->size = j;
+
+    return d_critical_indices;
 }
 
-int create_unique_buckets(char *string, int *d_critical_indices, int size, bucket_array_t *bucket_array)
+bucket_array_t *create_unique_buckets(int_array_t *string, int_array_t *d_critical_indices)
 {
+    bucket_array_t *suffix_buckets = create_bucket_array(d_critical_indices->size);
+    if (suffix_buckets == NULL) { return NULL; }
+
     int bucket_count = 0;
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < d_critical_indices->size; ++i)
     {
         bool is_duplicate = false;
-        bucket_t bucket = { string + d_critical_indices[i], d_ + 2 };
+        bucket_t bucket = { string->elements + d_critical_indices->elements[i], d_ + 2 };
 
         for (int j = 0; j < bucket_count; ++j)
         {
-            if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
+            if (bucket_compare(&bucket, bucket_at(suffix_buckets, j)) == 0)
             {
                 is_duplicate = true;
                 break;
@@ -234,47 +200,63 @@ int create_unique_buckets(char *string, int *d_critical_indices, int size, bucke
 
         if (is_duplicate) { continue; }
 
-        bucket_array->buckets[bucket_count++] = bucket;
+        suffix_buckets->buckets[bucket_count++] = bucket;
     }
 
-    return adjust_bucket_array_size(bucket_array, bucket_count);
+    if (!adjust_bucket_array_size(suffix_buckets, bucket_count))
+    {
+        free_bucket_array(suffix_buckets);
+        free(suffix_buckets);
+        return NULL;
+    }
+
+    return suffix_buckets;
 }
 
-char *create_new_string(char *string, int *d_critical_indices, int size, bucket_array_t *bucket_array)
+bucket_array_t *deduce_suffix_buckets(int_array_t *string, int_array_t *d_critical_indices)
 {
-    char *new_string = (char *) malloc((size + 1) * sizeof(char));
+    bucket_array_t *suffix_buckets = create_unique_buckets(string, d_critical_indices);
+    if (suffix_buckets == NULL) { return NULL; }
+
+    sort_bucket_array(suffix_buckets);
+
+    return suffix_buckets;
+}
+
+int_array_t *create_new_string(int_array_t *string, int_array_t *d_critical_indices, bucket_array_t *bucket_array)
+{
+    int_array_t *new_string = create_int_array(d_critical_indices->size);
     if (new_string == NULL) return NULL;
 
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < d_critical_indices->size; ++i)
     {
-        bucket_t bucket = { string + d_critical_indices[i], d_ + 2 };
+        bucket_t bucket = { string->elements + d_critical_indices->elements[i], d_ + 2 };
 
         for (int j = 0; j < bucket_array->size; ++j)
         {
             if (bucket_compare(&bucket, bucket_at(bucket_array, j)) == 0)
             {
-                new_string[i] = (char) (j + '0');
+                new_string->elements[i] = j;
                 break;
             }
         }
     }
-    new_string[size] = '\0';
 
     return new_string;
 }
 
-int_array_t *get_buckets(char *string, int size, bool is_end)
+int_array_t *get_buckets(int_array_t *string, bool is_end)
 {
-    int_array_t *buckets = create_int_array(size);
+    int_array_t *buckets = create_int_array(INPUT_RANGE + 1);
     if (buckets == NULL) return NULL;
 
-    for (int i = 0; i < (int) strlen(string); ++i)
+    for (int i = 0; i < string->size; ++i)
     {
-        (*element_at(buckets, string[i]))++;
+        (*element_at(buckets, string->elements[i]))++;
     }
 
     int sum = 0;
-    for (int i = 0; i <= K; ++i)
+    for (int i = 0; i < INPUT_RANGE + 1; ++i)
     {
         element_t *element = element_at(buckets, i);
 
@@ -285,25 +267,26 @@ int_array_t *get_buckets(char *string, int size, bool is_end)
     return buckets;
 }
 
-int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array)
+int induce_suffix_array(int_array_t *string, sort_data_t *sort_data, int_array_t *d_critical_indices, suffix_array_t *first_array, suffix_array_t *second_array)
 {
-    int_array_t *buckets = get_buckets(string, K, true);
+    int_array_t *buckets = get_buckets(string, true);
     if (buckets == NULL) return 0;
 
     for (int i = second_array->size - 1; i >= 0; --i)
     {
-        int index = d_critical_indices[*suffix_at(second_array, i)];
+        int index = d_critical_indices->elements[*suffix_at(second_array, i)];
 
         if (attributes_at(sort_data, index)->lms_marker)
         {
-            element_t *bucket = element_at(buckets, string[index]);
+            element_t *bucket = element_at(buckets, string->elements[index]);
             --(*bucket);
             *suffix_at(first_array, *bucket) = index;
         }
     }
 
+    free_int_array(buckets);
     free(buckets);
-    buckets = get_buckets(string, K, false);
+    buckets = get_buckets(string, false);
     if (buckets == NULL) return 0;
 
     for (int i = 0; i < first_array->size; ++i)
@@ -314,14 +297,15 @@ int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_in
         int j = *suffix - 1;
         if (attributes_at(sort_data, j)->type == l_type)
         {
-            element_t *element = element_at(buckets, string[j]);
+            element_t *element = element_at(buckets, string->elements[j]);
             *suffix_at(first_array, *element) = j;
             ++(*element);
         }
     }
 
+    free_int_array(buckets);
     free(buckets);
-    buckets = get_buckets(string, K, true);
+    buckets = get_buckets(string, true);
     if (buckets == NULL) return 0;
 
     for (int i = first_array->size - 1; i >= 0; --i)
@@ -332,12 +316,13 @@ int induce_suffix_array(char *string, sort_data_t *sort_data, int *d_critical_in
         int j = *suffix - 1;
         if (j >= 0 && attributes_at(sort_data, j)->type == s_type)
         {
-            element_t *element = element_at(buckets, string[j]);
+            element_t *element = element_at(buckets, string->elements[j]);
             --(*element);
             *suffix_at(first_array, *element) = j;
         }
     }
 
+    free_int_array(buckets);
     free(buckets);
     return 1;
 }

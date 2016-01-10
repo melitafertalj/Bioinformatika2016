@@ -20,6 +20,7 @@ sort_data_t *create_sort_data(const int size)
         initialize_attribute(&sort_data->attributes[i]);
     }
 
+    sort_data->length = size;
     return sort_data;
 }
 

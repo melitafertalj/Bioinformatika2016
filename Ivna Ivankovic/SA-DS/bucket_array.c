@@ -1,9 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
-
 #include "bucket_array.h"
 
-bucket_t *create_bucket(char *substring, const int length)
+#include <stdlib.h>
+
+bucket_t *create_bucket(int *substring, const int length)
 {
     bucket_t *bucket = (bucket_t *) malloc(sizeof(bucket));
 
@@ -15,9 +14,17 @@ bucket_t *create_bucket(char *substring, const int length)
     return bucket;
 }
 
-int bucket_compare(bucket_t *first, bucket_t *second)
+int bucket_compare(const void *first, const void *second)
 {
-    return strncmp(first->substring, second->substring, first->length);
+    bucket_t left = *((bucket_t *) first);
+    bucket_t right = *((bucket_t *) second);
+    for (int i = 0; i < right.length; i++)
+    {
+        if (left.substring[i] < right.substring[i]) return -1;
+        else if (left.substring[i] > right.substring[i]) return 1;
+    }
+
+    return 0;
 }
 
 bucket_array_t *create_bucket_array(const int size)
@@ -44,7 +51,7 @@ void free_bucket_array(bucket_array_t *bucket_array)
 
 bucket_t *bucket_at(bucket_array_t *bucket_array, const int index)
 {
-    return &bucket_array->buckets[index];
+    return bucket_array->buckets + index;
 }
 
 int adjust_bucket_array_size(bucket_array_t *bucket_array, const int new_size)
@@ -57,14 +64,9 @@ int adjust_bucket_array_size(bucket_array_t *bucket_array, const int new_size)
     return bucket_array->buckets != NULL;
 }
 
-int bucket_compare_(const void *first, const void *second)
-{
-    return bucket_compare((bucket_t *) first, (bucket_t *) second);
-}
-
 void sort_bucket_array(bucket_array_t *bucket_array)
 {
     if (bucket_array == NULL) return;
 
-    qsort(bucket_array->buckets, bucket_array->size, sizeof(bucket_t), bucket_compare_);
+    qsort(bucket_array->buckets, bucket_array->size, sizeof(bucket_t), bucket_compare);
 }

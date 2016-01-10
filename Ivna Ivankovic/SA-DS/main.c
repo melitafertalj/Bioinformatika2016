@@ -14,27 +14,27 @@
 // Reports the error to stderr and terminates the program.
 void report_error_and_exit(const char *message, const int value);
 
-int read_input_string(FILE *file, char **string);
+int read_input_string(FILE *file, int_array_t **string);
 
 // First parameter is the input file, second is the output file
 int main(int argc, char *argv[])
 {
-    //if (argc != 3) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
+    if (argc != 3) report_error_and_exit("Specifiy the IO files!", EXIT_FAILURE);
 
-    FILE *input_file = fopen("clo1.txt", "r");
+    FILE *input_file = fopen(argv[1], "r");
     if (input_file == NULL)
     {
         report_error_and_exit("Unable to open input file!", EXIT_FAILURE);
     }
 
-    FILE *output_file = fopen("a.txt", "w");
+    FILE *output_file = fopen(argv[2], "w");
     if (output_file == NULL)
     {
         fclose(input_file);
         report_error_and_exit("Unable to open input file!", EXIT_FAILURE);
     }
 
-    char *string = NULL;
+    int_array_t *string = NULL;
     if (read_input_string(input_file, &string) == 0)
     {
         free(string);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     fclose(input_file); // Don't need it anymore.
 
-    suffix_array_t *suffix_array = create_suffix_array(strlen(string));
+    suffix_array_t *suffix_array = create_suffix_array(string->size);
     if (suffix_array == NULL)
     {
         free(string);
@@ -55,13 +55,15 @@ int main(int argc, char *argv[])
 
     sa_ds(string, suffix_array, D_LEN);
 
-    string[strlen(string) - 1] = '$'; // Replace the virtual sentinel with a visible character
+    string->elements[string->size - 1] = '$'; // Replace the virtual sentinel with a visible character
     for (int i = 0; i < suffix_array->size; ++i)
     {
         suffix_t *element = suffix_at(suffix_array, i);
 
 #ifdef DEBUG
-        printf("%-10d %s\n", *element, string + *element);
+        printf("%-10d", *element);
+        for (int j = *element; j < string->size; ++j) { printf("%c", string->elements[j]); }
+        printf("\n");
 #endif // DEBUG
 
         fprintf(output_file, "%d ", *element);
@@ -80,6 +82,7 @@ int main(int argc, char *argv[])
     free_suffix_array(suffix_array);
     free(suffix_array);
     fclose(output_file);
+    free_int_array(string);
     free(string);
 
     return EXIT_SUCCESS;
@@ -91,15 +94,14 @@ void report_error_and_exit(const char *message, const int value)
     exit(value);
 }
 
-int read_input_string(FILE *file, char **string)
+int read_input_string(FILE *file, int_array_t **string)
 {
     int block_count = 0;
     int length = 0;
     int allocated_size = 0;
-    char *local = NULL;
+    int *local = NULL;
     while (!feof(file))
     {
-        printf("%d\n", length);
         char symbol;
         fread(&symbol, sizeof(symbol), 1, file);
         if (ferror(file)) { free(local); return 0; }
@@ -109,16 +111,23 @@ int read_input_string(FILE *file, char **string)
         ++length;
         if (length >= allocated_size)
         {
-            local = realloc(local, (block_count + 1) * BLOCK_SIZE * sizeof(char));
+            local = realloc(local, (block_count + 1) * BLOCK_SIZE * sizeof(int));
             if (local == NULL) { return 0; }
 
+            allocated_size = (block_count + 1) * BLOCK_SIZE;
             ++block_count;
         }
 
         local[length - 1] = symbol;
     }
-    local[length] = 1; //Virtual sentinel. This symbol won't appear in the input
-    local[length + 1] = '\0';
-    *string = local;
+    local[length] = INT_MIN; //Virtual sentinel. This symbol won't appear in the input
+
+    int_array_t *local_array = (int_array_t *) malloc(sizeof(int_array_t));
+    if (local_array == NULL) { free(local); return 0; }
+
+    local_array->elements = local;
+    local_array->size = length + 1;
+    *string = local_array;
+
     return 1;
 }

@@ -15,6 +15,13 @@ int_array_t *create_int_array(const int size)
     return int_array;
 }
 
+void free_int_array(int_array_t *int_array)
+{
+    if (int_array == NULL) return;
+
+    free(int_array->elements);
+}
+
 element_t *element_at(int_array_t *int_array, const int index)
 {
     return &int_array->elements[index];

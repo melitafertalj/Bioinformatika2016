@@ -4,13 +4,13 @@
 
 typedef struct
 {
-    char *substring;
+    int *substring;
     int length;
 } bucket_t;
 
-bucket_t *create_bucket(char *substring, const int length);
+bucket_t *create_bucket(int *substring, const int length);
 
-int bucket_compare(bucket_t *first, bucket_t *second);
+int bucket_compare(const void *first, const void *second);
 
 typedef struct
 {
@@ -27,5 +27,4 @@ bucket_t *bucket_at(bucket_array_t *bucket_array, const int index);
 int adjust_bucket_array_size(bucket_array_t *bucket_array, const int new_size);
 
 void sort_bucket_array(bucket_array_t *bucket_array);
-
 #endif // BUCKET_ARRAY_H
