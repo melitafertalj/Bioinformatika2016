@@ -6,7 +6,7 @@
 #include "int_array.h"
 #include "sort_data.h"
 
-#define INPUT_RANGE UINT16_MAX
+#define INPUT_RANGE UINT16_MAX * 8
 
 int d_ = 2;
 

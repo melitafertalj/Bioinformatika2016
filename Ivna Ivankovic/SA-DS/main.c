@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
+#include <limits.h>
 
 #include "suffix_array.h"
 #include "sa_ds.h"
