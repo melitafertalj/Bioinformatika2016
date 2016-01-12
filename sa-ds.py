@@ -125,17 +125,17 @@ def SA_DS(S, SA, n, K):
     print '-------------------------------'
     del bkt
 
-    SA[0:n1] = s1
-    SA[-n1:] = SA1
+    SA[0:n1] = SA1
+    SA[-n1:] = s1
     
     #naming
     for i in xrange(n1-1, -1, -1):
         j = 2 * i
-        SA[j] = SA1[i]
+        SA[j] = s1[i]
         SA[j+1] = -1
     for i in xrange(2*(n1-1) + 3, n, 2):
         SA[i] = -1
-
+    
     name = 0
     c = [-1, -1, -1, -1]
     for i in xrange(n1):
@@ -174,7 +174,7 @@ def SA_DS(S, SA, n, K):
     #filling in the gaps in SA
     i = n/2*2 - 1
     j = n - 1
-    while (i >= 0 and i >= 0):
+    while (i >= 0 and j >= 0):
         if SA[i] != -1:
             SA[j] = SA[i]
             j -= 1
@@ -243,8 +243,14 @@ K = 255
 #     'o', 'g', 'i', 'j', 'a', chr(0))
 
 # 'mmiissiissiippii'
-S = ('m', 'm', 'i', 'i', 's', 's', 'i', 'i', 's', 's', 'i', 'i', 'p', 'p', 'i',
-     'i', chr(0))
+#S = ('m', 'm', 'i', 'i', 's', 's', 'i', 'i', 's', 's', 'i', 'i', 'p', 'p', 'i',
+#     'i', chr(0))
+
+# 'gle malu vocku poslije kise, puna je kapi pa ih njise'
+S = ('g', 'l', 'e', ' ', 'm', 'a', 'l', 'u', ' ', 'v', 'o', 'c', 'k', 'u', ' ',
+     'p', 'o', 's', 'l', 'i', 'j', 'e', ' ', 'k', 'i', 's', 'e', ',', ' ', 'p',
+     'u', 'n', 'a', ' ', 'j', 'e', ' ', 'k', 'a', 'p', 'i', ' ', 'p', 'a', ' ',
+     'i', 'h', ' ', 'n', 'j', 'i', 's', 'e', chr(0))
 
 n = len(S)
 SA = [0] * n #result
