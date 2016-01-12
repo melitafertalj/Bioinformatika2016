@@ -23,7 +23,12 @@ namespace SA_DS
             }
 
             List<int> SA = SADS(Sint);
-            Console.WriteLine("");
+            Console.WriteLine("Result: ");
+            foreach(int i in SA)
+            {
+                Console.Write("{0} ", i);
+            }
+            Console.ReadKey();
             
         }
         private static List<int> SADS(List<int> S)
@@ -122,12 +127,13 @@ namespace SA_DS
 
             List<List<int>> valueLists = new List<List<int>>();
 
-            // for each index in P1 we're creating an int list element_in_p1|list_of_elements_in_subarray|placeholder_for_bucket_number
+            // for each index in P1 we're creating an int list {element_in_p1|list_of_elements_in_subarray|placeholder_for_bucket_number}
             foreach(int p1element in P1)
             {
                 valueLists.Add(new List<int>() {p1element});
                 for (int i = 0; i < d + 2; i++)
                 {
+                    // 2*value(element in S) + value(element in t)
                     valueLists.Last().Add(2*val(S[p1element+i])+val(t[p1element + i]));
                 }
                 valueLists.Last().Add(0);
@@ -143,7 +149,7 @@ namespace SA_DS
             }
 
             int bucketNumber = 0;
-            valueLists[0][d + 2+1] = bucketNumber++;
+            valueLists[0][d+2+1] = bucketNumber++;
 
             for(int i = 1; i < valueLists.Count; i++)
             {
@@ -152,7 +158,7 @@ namespace SA_DS
                     bucketNumber--;
                 }
 
-                valueLists[i][d + 2+1] = bucketNumber;
+                valueLists[i][d+2+1] = bucketNumber;
                 bucketNumber++;
             }
 
@@ -169,18 +175,175 @@ namespace SA_DS
         }
         private static List<int> InduceSA0(List<int> iS,List<int> SA1,List<int> iP1, List<bool> it)
         {
-            // initialize SA (of the same length as S) with -1's
-            List<int> SA0 = new List<int>();
-            for (int i = 0; i < iS.Count; i++)
+            iP1.Sort();
+
+            // transform SA1 into a list of buckets
+            int[] sortedArrayOfUniqueElements = makeArrayOfUniqueElements(iS);
+            for(int i = 0; i < iS.Count; i++)
             {
-                SA0.Add(-1);
+                // replace the item with a bucket number
+                for(int j = 0; j < sortedArrayOfUniqueElements.Count(); j++)
+                {
+                    if (sortedArrayOfUniqueElements[j] == iS[i])
+                    {
+                        iS[i] = j;
+                        break;
+                    }
+                }
             }
 
-            // find the end of each bucket in SA for all the suffixes in S
+            // remove the three helping $ at the end of S
+            iS.RemoveRange(iS.Count-3,3);
 
-            return new List<int>();
+            // calculate sizes of buckets
+            int[] bucketSizes = new int[differentElements(iS)];
+            Array.Clear(bucketSizes,0,bucketSizes.Length);
+
+            foreach(int x in iS)
+            {
+                bucketSizes[x]++;
+            }
+
+            List<int> headPositions;
+
+            // Setup SA as a list of buckets
+            List<List<int>> SA = new List<List<int>>();
+
+            // Alg. for Inducing SA from SA1 in SA-DS
+            // Initialize each item of SA as -1
+            foreach (int x in bucketSizes)
+            {
+                List<int> newBucket = new List<int>();
+                for(int i = 0; i < x; i++)
+                {
+                    newBucket.Add(-1);
+                }
+                SA.Add(newBucket);
+            }
+            // 1st step
+            headPositions = setHead(SA, "end");
+            for(int i = SA1.Count - 1; i >= 0; i--)
+            {
+                int SA1Element = SA1[i];
+                int p1Element = iP1[SA1Element];
+
+                // if suf(S; P1[SA1[i]]) is a LMS suffix
+                if(p1Element>0 && it[p1Element] == true && it[p1Element-1] == false)
+                {
+                    //put P1[SA1[i]] to the current end of the bucket for suf(S; P1[SA1[i]]) in SA
+                    SA[iS[p1Element]][headPositions[iS[p1Element]]]= p1Element;
+                    headPositions[iS[p1Element]]--;
+                }
+            }
+
+            // 2nd step
+            headPositions = setHead(SA, "start");
+            for(int i = 0; i < SA.Count; i++)
+            {
+                for (int j = 0; j < SA[i].Count; j++)
+                {
+                    int saElement = SA[i][j];
+                    // if S[SA[i]−1] is L-type
+                    if (saElement > 0 && it[saElement-1]==false)
+                    {
+                        SA[iS[saElement - 1]][headPositions[iS[saElement - 1]]] = saElement - 1;
+                        headPositions[iS[saElement - 1]]++;
+                    }
+                }
+            }
+
+            // 3rd step
+            headPositions = setHead(SA, "end");
+            for (int i=SA.Count-1;i>=0;i--)
+            {
+                for(int j = SA[i].Count - 1; j >= 0; j--)
+                {
+                    int saElement = SA[i][j];
+                    // if S[SA[i]−1] is S-type
+                    if (saElement > 0 && it[saElement - 1] == true)
+                    {
+                        SA[iS[saElement - 1]][headPositions[iS[saElement - 1]]] = saElement - 1;
+                        headPositions[iS[saElement - 1]]--;
+                    }
+                }
+            }
+
+            // prepare SA for returning (from a list of buckets to a list of elements)
+            List<int> retSA=new List<int>();
+            foreach(List<int> l in SA)
+            {
+                foreach (int i in l)
+                {
+                    retSA.Add(i);
+                }
+            } 
+
+            return retSA;
         }
 
+        private static int[] makeArrayOfUniqueElements(List<int> iS)
+        {
+            List<int> seenElements = new List<int>();
+            foreach(int i in iS)
+            {
+                if (!seenElements.Contains(i))
+                {
+                    seenElements.Add(i);
+                }
+            }
+            seenElements.Sort();
+            return seenElements.ToArray();
+        }
+
+        private static int differentElements(List<int> iS)
+        {
+            // calculates the number of different elements in a list
+            int counter = 0;
+            List<int> seenElements = new List<int>();
+
+            foreach(int x in iS)
+            {
+                if (!seenElements.Contains(x))
+                {
+                    counter++;
+                    seenElements.Add(x);
+                }
+            }
+            return counter;
+        }
+        private static List<int> pushFrom(List<int> l,int element,String s, int currPos)
+        {
+            if (s == "start")
+            {
+                l[currPos] = element;
+            }
+            else
+            {
+                l.Add(element);
+                l.RemoveAt(0);
+            }
+            return l;
+        }
+        private static List<int> setHead(List<List<int>>SA, string where)
+        {
+            List<int> answer = new List<int>();
+
+            if (where == "start")
+            {
+                foreach(List<int> l in SA)
+                {
+                    answer.Add(0);
+                }
+            }
+            else
+            {
+                foreach (List<int> l in SA)
+                {
+                    answer.Add(l.Count-1);
+                }
+            }
+            return answer;
+        }
         private static int val(char c)
         {
             int i = c;
@@ -207,7 +370,7 @@ namespace SA_DS
         {
             for(int i = 0; i < d + 2; i++)
             {
-                if(list1[1+i]!= list2[1 + i])
+                if(list1[1+i]!= list2[1+i])
                 {
                     return false;
                 }
