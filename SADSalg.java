@@ -104,10 +104,11 @@ public class SADSalg {
 		System.out.println("Pass 4: " + Arrays.toString(s1));
 		System.out.println("Bucket sort pass 4 done");
 		System.out.println("----------------------------");
-		
-		
-		
-		// p1 = sortDCriticals(p1, b);
+
+		// fill SA array with last two sorted d-crit arrays
+		System.arraycopy(sa1, 0, sa, 0, sa1.length);
+		System.arraycopy(s1, 0, sa, (sa.length - s1.length), s1.length);
+
 		// s1 = nameDCriticals(b);
 		// for(int c: s1.toCharArray()) {
 		// if(isNumberofBuckets(c)) {
