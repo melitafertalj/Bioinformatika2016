@@ -68,9 +68,6 @@ public class SADSalg {
 		System.out.println("n: " + n);
 		System.out.println("K: " + k);
 
-		int[] b = new int[5];
-
-
 		boolean[] t = scanSLtype(s);
 		System.out.println("t: " + Arrays.toString(t));
 
@@ -109,7 +106,84 @@ public class SADSalg {
 		System.arraycopy(sa1, 0, sa, 0, sa1.length);
 		System.arraycopy(s1, 0, sa, (sa.length - s1.length), s1.length);
 
-		// s1 = nameDCriticals(b);
+		System.out.println("sa: " + Arrays.toString(sa));
+
+		// name d-critical array
+		for (int i = n1 - 1; i >= 0; i--) {
+			int j = 2 * i;
+			sa[j] = s1[i];
+			sa[j + 1] = -1;
+		}
+		for (int i = 2 * (n1 - 1) + 3; i < n; i += 2) {
+			sa[i] = -1;
+		}
+
+		int name = 0;
+		int[] c = { -1, -1, -1, -1 }; // d = 2 -> s-crit substring length is 4
+
+		for (int i = 0; i < n1; i++) {
+			int pos = sa[2 * i];
+			boolean diff = false;
+			for (int h = 0; h < 3; h++) {
+				if (pos + h < n) {
+					if (s[pos + h] != c[h]) {
+						diff = true;
+						break;
+					}
+				} else {
+					if (c[h] != -1) {
+						diff = true;
+						break;
+					}
+				}
+			}
+			if (pos + 3 < n) {
+				int ls = 0;
+				if (t[pos + 3]) {
+					ls = 1;
+				}
+				if ((s[pos + 3] * 2 + ls) != c[3]) {
+					diff = true;
+				} else {
+					if (c[3] != -1) {
+						diff = true;
+					}
+				}
+				if (diff) {
+					name++;
+					for (int h = 0; h < 4; h++) {
+						if (pos + h < n) {
+							c[h] = s[pos + h];
+						} else {
+							c[h] = -1;
+						}
+					}
+					if (pos + 3 < n) {
+						c[3] = s[pos + 3] * 2 + ls;
+					} else {
+						c[3] = -1;
+					}
+				}
+				if (pos % 2 == 0) {
+					pos--;
+				}
+				sa[pos] = name - 1;
+			}
+		}
+
+		int i = n / 2 * 2 - 1;
+		int j = n - 1;
+		while (i >= 0 && j >= 0) {
+			if (sa[i] != -1) {
+				sa[j] = sa[i];
+				j -= i;
+			}
+			i -= 2;
+		}
+		System.arraycopy(sa, 0, s1, n1, (n - n1));
+
+		System.out.println("s1 " + Arrays.toString(s1));
+
 		// for(int c: s1.toCharArray()) {
 		// if(isNumberofBuckets(c)) {
 		// computeSA1();
