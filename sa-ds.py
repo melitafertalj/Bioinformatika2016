@@ -1,3 +1,4 @@
+import sys
 import time
 
 #getting the L and S types for each character
@@ -111,25 +112,32 @@ def SA_DS(S, SA, n, K):
     
     #bucket sorting
     s1 = SA[n-n1 :]
+    
     #print 's1: ', s1
     #print '-------------------------------'
+
     bkt = [0] * (K+1)
     bucketSortLS(SA1, s1, S, t, n, n1, 3)  # 3 = d + 2 - 1
     #print 'LS pass: ', s1
     #print 'Bucket sort LS done.'
+
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 3)
     #print 'Pass 1: ', SA1
     #print 'Bucket sort pass 1 done.'
+
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 2)
     #print 'Pass 2: ', s1
     #print 'Bucket sort pass 2 done.'
+
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 1)
     #print 'Pass 3: ', SA1
     #print 'Bucket sort pass 3 done.'
+
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 0)
     #print 'Pass 4: ', s1
     #print 'Bucket sort pass 4 done.'
     #print '-------------------------------'
+
     del bkt
 
     SA[0:n1] = SA1
@@ -222,6 +230,7 @@ def SA_DS(S, SA, n, K):
             SA[bkt[S[j]]] = j
     #print 'Step 1: ', SA
     #print 'Step 1 done.'
+
     getBuckets(S, bkt, n, K, 0)
     for i in xrange(n):
         j = SA[i] - 1
@@ -230,6 +239,7 @@ def SA_DS(S, SA, n, K):
             bkt[S[j]] += 1
     #print 'Step 2: ', SA
     #print 'Step 2 done.'
+
     getBuckets(S, bkt, n, K, 1)
     for i in xrange(n - 1, -1, -1):
         j = SA[i] - 1
@@ -245,32 +255,32 @@ def SA_DS(S, SA, n, K):
 #main
 K = 255
 
-with open("Tests/haemo.txt", "r") as inputFile:
-    lines = inputFile.read().splitlines()
+if len(sys.argv) != 3:
+    print 'Pogresan broj argumenata!'
+else:
+    with open(sys.argv[1], "r") as inputFile:
+        lines = inputFile.read().splitlines()
 
-S = []
-for line in lines:
-    if line[0] != '>':
-        S.extend(line)
-for i in xrange(len(S)):
-    S[i] = ord(S[i])
-S.append(0)
+    S = []
+    for line in lines:
+        if line[0] != '>':
+            S.extend(line)
 
-n = len(S)
-SA = [0] * n #result
+    with open("EnteroBezKom.txt", "w") as ent:
+        for line in S:
+            ent.write(line)
 
-start = time.clock()
-SA_DS(S, SA, n, K)
-end = time.clock()
-print 'Time elapsed (in seconds): ', end - start
+    for i in xrange(len(S)):
+        S[i] = ord(S[i])
+    S.append(0)
 
-with open("output.txt", "w") as outputFile:
-    outputFile.write(', '.join(str(x) for x in SA))
+    n = len(S)
+    SA = [0] * n #result
 
-strS = ''.join(str(x) for x in S)
-isSorted = 'Sorted!'
-for i in xrange(1, len(SA)):
-    if S[SA[i-1] :] > S[SA[i] :]:
-        isSorted = 'Not sorted! ' + str(i) + '. suffix is smaller than ' + str(i+1) + '.'
-        break
-print isSorted
+    start = time.clock()
+    SA_DS(S, SA, n, K)
+    end = time.clock()
+    print 'Time elapsed (in seconds): ', end - start
+
+    with open(sys.argv[2], "w") as outputFile:
+        outputFile.write(', '.join(str(x) for x in SA))
