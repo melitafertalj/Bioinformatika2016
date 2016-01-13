@@ -90,60 +90,56 @@ def getBuckets(S, bkt, n, K, end):
 
 #recursive function - core of SA_DS algorithm
 def SA_DS(S, SA, n, K):
-    #print 'Beginning'
-    #print '-------------------------------'
-    #print 'S: ', S
-    #print 'SA: ', SA
-    #print 'n: ', n
-    #print 'K: ', K
+##    outputFile.write('Beginning\n')
+##    outputFile.write('-------------------------------\n')
+##    outputFile.write('S: ' + str(S) + '\n')
+##    outputFile.write('SA: ' + str(SA) + '\n')
+##    outputFile.write('n: ' + str(n) + '\n') 
+##    outputFile.write('K: ' + str(K) + '\n') 
     
     #LS categorization
     t = [0] * n
     LSTypeChar(S, t, n)
-    #print 't: ', t
+##    outputFile.write('t: ' + str(t) + '\n')
     
     #d-critical characters
-    SA1 = SA
+    SA1 = SA #list of n ints, initially zeros
     n1 = dCriticalChars(S, t, n, SA1, 2) #d = 2
-    SA1 = SA1[0:n1]
+    SA1 = SA1[0:n1] #cut away unnecessary zeros
 
-    #print 'SA1: ', SA1
-    #print 'D-critical characters found.'
+##    outputFile.write('SA1: ' + str(SA1) + '\n')
     
     #bucket sorting
-    s1 = SA[n-n1 :]
+    s1 = SA[0:n1] #list of n1 ints, initially zeros
     
-    #print 's1: ', s1
-    #print '-------------------------------'
+##    outputFile.write('-------------------------------\n')
 
     bkt = [0] * (K+1)
+    #sorting 4-character 2-critical substrings by type of 4th character
     bucketSortLS(SA1, s1, S, t, n, n1, 3)  # 3 = d + 2 - 1
-    #print 'LS pass: ', s1
-    #print 'Bucket sort LS done.'
-
+##    outputFile.write('LS pass: ' + str(s1) + '\n')
+    
+    #sorting 4-character 2-critical substring by 4th character
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 3)
-    #print 'Pass 1: ', SA1
-    #print 'Bucket sort pass 1 done.'
-
+##    outputFile.write('Pass 1: ' + str(SA1) + '\n')
+    
+    #sorting ... by 3rd character
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 2)
-    #print 'Pass 2: ', s1
-    #print 'Bucket sort pass 2 done.'
-
+##    outputFile.write('Pass 2: ' + str(s1) + '\n')
+    
+    #sorting ... by 2nd character
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 1)
-    #print 'Pass 3: ', SA1
-    #print 'Bucket sort pass 3 done.'
-
+##    outputFile.write('Pass 3: ' + str(SA1) + '\n')
+    
+    #sorting ... by 1st character
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 0)
-    #print 'Pass 4: ', s1
-    #print 'Bucket sort pass 4 done.'
-    #print '-------------------------------'
+##    outputFile.write('Pass 4: ' + str(s1) + '\n')
+##    outputFile.write('-------------------------------\n')
 
     del bkt
 
-    SA[0:n1] = SA1
-    SA[-n1:] = s1
-    
     #naming
+    #SA = [s1[0], -1, s1[1], -1, ..., s1[n1-1], -1, ?, -1, ?...]
     for i in xrange(n1-1, -1, -1):
         j = 2 * i
         SA[j] = s1[i]
@@ -152,10 +148,11 @@ def SA_DS(S, SA, n, K):
         SA[i] = -1
     
     name = 0
-    c = [-1, -1, -1, -1]
+    c = [-1, -1, -1, -1] #last encountered d-critical substring
     for i in xrange(n1):
         pos = SA[2*i]
         diff = 0
+        #compare the current substring to c
         for h in xrange(3):
             if pos+h < n:
                 if S[pos+h] != c[h]:
@@ -166,11 +163,12 @@ def SA_DS(S, SA, n, K):
                     diff = 1
                     break
         if pos+3 < n:
-            if (S[pos+3]*2 + t[pos+3]) != c[3]:
+            if (S[pos+3]*2 + t[pos+3]) != c[3]: #omega-weight
                 diff = 1
         else:
             if c[3] != -1:
                 diff = 1
+        #if there is a difference, increase name and update c 
         if diff == 1:
             name += 1
             for h in xrange(3):
@@ -179,14 +177,15 @@ def SA_DS(S, SA, n, K):
                 else:
                     c[h] = -1
             if (pos+3) < n:
-                c[3] = S[pos+3]*2 + t[pos+3]
+                c[3] = S[pos+3]*2 + t[pos+3] #omega-weight
             else:
                 c[3] = -1
         if (pos%2 == 0):
             pos -= 1
+        #assign name. Position is strange but puts 0 (sentinel) on the end.
         SA[pos] = name - 1
     
-    #filling in the gaps in SA
+    #copy names in s1
     i = n/2*2 - 1
     j = n - 1
     while (i >= 0 and j >= 0):
@@ -194,16 +193,16 @@ def SA_DS(S, SA, n, K):
             SA[j] = SA[i]
             j -= 1
         i -= 2
-    s1 = SA[n-n1 :]
+    s1 = SA[-n1 :]
     
     #solving reduced problem
-    #print 's1: ', s1, '\n'
+##    outputFile.write('s1: ' + str(s1) + '\n')
     
     #recursion
     if name < n1:
-        #print '\nRecursion:\n'
+##        outputFile.write('\nRecursion:\n')
         SA_DS(s1, SA1, n1, name-1)
-        #print '\nRecursion ended.\n\n'
+##        outputFile.write('\nRecursion ended.\n\n')
     else:
         for i in xrange(n1):
             SA1[s1[i]] = i
@@ -211,8 +210,9 @@ def SA_DS(S, SA, n, K):
     SA[0:n1] = s1
     SA[-n1:] = SA1
     
-    #print 'SA1: ', SA1
-    #print 'Inducing SA:'
+##    outputFile.write('-------------------------------\n')
+##    outputFile.write('Inducing SA:\n')
+##    outputFile.write('SA1: ' + str(SA1) + '\n')
     dCriticalChars(S, t, n, s1, 2)
     SA[-n1:] = s1
     bkt = [0] * (K+1)
@@ -228,26 +228,23 @@ def SA_DS(S, SA, n, K):
         if j > 0 and t[j] == 1 and t[j-1] == 0:
             bkt[S[j]] -= 1
             SA[bkt[S[j]]] = j
-    #print 'Step 1: ', SA
-    #print 'Step 1 done.'
-
+##    outputFile.write('Step 1: ' + str(SA) + '\n')
+    
     getBuckets(S, bkt, n, K, 0)
     for i in xrange(n):
         j = SA[i] - 1
         if j >= 0 and t[j] == 0:
             SA[bkt[S[j]]] = j
             bkt[S[j]] += 1
-    #print 'Step 2: ', SA
-    #print 'Step 2 done.'
-
+##    outputFile.write('Step 2: ' + str(SA) + '\n')
+    
     getBuckets(S, bkt, n, K, 1)
     for i in xrange(n - 1, -1, -1):
         j = SA[i] - 1
         if j >= 0 and t[j] == 1:
             bkt[S[j]] -= 1
             SA[bkt[S[j]]] = j
-    #print 'Step 3: ', SA
-    #print 'Step 3 done.'
+##    outputFile.write('Step 3: ' + str(SA) + '\n')
     
     del bkt, t, SA1, s1
 
@@ -277,6 +274,7 @@ else:
     n = len(S)
     SA = [0] * n #result
 
+##    outputFile = open(sys.argv[2], "w")
     start = time.clock()
     SA_DS(S, SA, n, K)
     end = time.clock()
@@ -284,3 +282,4 @@ else:
 
     with open(sys.argv[2], "w") as outputFile:
         outputFile.write(', '.join(str(x) for x in SA))
+##    outputFile.close()
