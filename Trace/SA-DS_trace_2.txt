@@ -1,4 +1,4 @@
-//Trace for original SA-DS code for d=2
+//Trace for student SA-DS code for d=2
 
 
 Computing suffix array by SA-DS on input.txt to output.dat
