@@ -264,7 +264,7 @@ void mySA_DS(unsigned char *s, int *SA, int n, int K, int m, int level) {
   //printIntArr("oldP1", oldP1, n1);
   //printIntArr("newP1", newP1, n1);
   
-  // originani algoritam ima pogrešku da ostavlja jedan -1 između SA i s1 ??
+
   for (i = n1; i < m; ++i) SA[i] = -1; // GAP
   int oldIndex; // index of SA[i] in oldP1
   for (i = 0; i < n1; ++i) {
