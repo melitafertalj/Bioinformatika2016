@@ -15,10 +15,10 @@ $ gcc --version
 
 $ make
 
-4. Run with default destination (d = 2):
+4. Run with default distance (d = 2):
 
 $ ./sads input.txt output.dat
 
-or run with specific destination:
+or run with specific distance:
 
 $ ./sads input.txt output.dat 3
