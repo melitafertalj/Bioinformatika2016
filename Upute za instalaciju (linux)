@@ -8,6 +8,7 @@ Zahtjevi:
     sudo apt-get install git-all
 
 Instalacija i pokretanje:
+
 1. Klonirajte repozitorij github.com/melitafertalj/Bioinformatika2016, branch erik
     git clone -b erik --single -branch https://github.com/melitafertalj/Bioinformatika2016
 2. Pozicionirajte se u folder Bioinformatika2016/Erik Percic/SA-DS/
