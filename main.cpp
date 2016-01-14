@@ -34,7 +34,7 @@ void printIntArr(char *msg, int *a, int n) {
 }
 
 // print char array, in given format fmt
-void prinCharArr(char *msg, unsigned char *a, int n, char *fmt) {
+void printCharArr(char *msg, unsigned char *a, int n, char *fmt) {
   int i;
 #if TESTPRINT
   fprintf(stderr, "\n%7s", msg);
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
   // final result
   // maxmem = 5 * (n - 1); // original 
   // size of input, total mem consumed, total time
-  fprintf(stderr, "\nFile: %s, Size: %d bytes, Memory: %.4lf kB / %.4lf MB, Time: %5.4f seconds\n", argv[1], n - 1, (double)maxmem / 1024, (double)maxmem / 1024 / 1024, duration);
+  fprintf(stderr, "\nFile: %s, Size: %d bytes, Memory: %.4lf kB / %.4lf MB, Time: %5.4f s\n", argv[1], n - 1, (double)maxmem / 1024, (double)maxmem / 1024 / 1024, duration);
 
 
 #ifdef _verify_sa
