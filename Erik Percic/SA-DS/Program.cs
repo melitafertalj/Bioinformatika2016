@@ -11,8 +11,6 @@ namespace SA_DS
         static int d = 2;
         static void Main(string[] args)
         {
-            for (int i = 1; i <= 12; i++)
-            {
                 StringBuilder s = new StringBuilder();
                 string line;
 
@@ -49,8 +47,6 @@ namespace SA_DS
                     }
                 }
                 return;
-            }
-            
         }
         private static List<int> SADS(List<int> S)
         {
