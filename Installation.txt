@@ -1,0 +1,25 @@
+How to run the program in linux using terminal
+
+1.  Install java JDK
+
+$ sudo apt-get update
+$ sudo apt-get install openjdk-7-jdk
+
+2. set path to compiler
+
+$ export PATH=$PATH:~/"yourjavaJDKfolder"/bin
+
+3. Open folder where the .java program is
+ 
+$ cd "yourlocation"
+
+4. Compile the code
+
+$ javac SADSalg.java
+
+5. run the program
+
+$ java SADSalg inputFile.txt outputFile.txt
+
+
+for more info, google is your friend :D
