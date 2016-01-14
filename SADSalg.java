@@ -217,9 +217,60 @@ public class SADSalg {
 			System.out.println("Recursion:");
 			sa1 = sads(s1, sa1, n1, name - 1);
 			System.out.println("Recursion end!");
+		} else {
+			for (i = 0; i < n1; i++) {
+				sa1[s1[i]] = i;
+			}
 		}
+		System.arraycopy(s1, 0, sa, 0, s1.length);
+		System.arraycopy(sa1, 0, sa, sa.length - n1, sa1.length);
 
-		// TODO sa = induce(sa1);
+		System.out.println("sa1: " + Arrays.toString(sa1));
+		System.out.println("Inducing SA:");
+
+		s1 = findDCriticalSubstrings(t);
+		System.arraycopy(s1, 0, sa, sa.length - n1, s1.length);
+		int[] bkt = new int[k + 1];
+		bkt = getBuckets(sInt, bkt, n, k, 1);
+
+		n1 = s1.length;
+		for (i = 0; i < n1; i++) {
+			sa1[i] = s1[sa1[i]];
+		}
+		for (i = n1; i < n; i++) {
+			sa[i] = -1;
+		}
+		System.arraycopy(sa1, 0, sa, 0, n1);
+		for (i = n1 - 1; i > -1; i--) {
+			j = sa[i];
+			sa[i] = -1;
+			if (j > 0 && t[j] && !t[j - 1]) {
+				bkt[sInt[j]]--;
+				sa[bkt[sInt[j]]] = j;
+			}
+		}
+		System.out.println("Step 1: " + Arrays.toString(sa));
+
+		getBuckets(sInt, bkt, n, k, 0);
+		for (i = 0; i < n; i++) {
+			j = sa[i] - 1;
+			if (j >= 0 && !t[j]) {
+				sa[bkt[sInt[j]]] = j;
+				bkt[sInt[j]]++;
+			}
+		}
+		System.out.println("Step 2: " + Arrays.toString(sa));
+
+		getBuckets(sInt, bkt, n, k, 1);
+		for (i = n - 1; i > -1; i--) {
+			j = sa[i] - 1;
+			if (j >= 0 && t[j]) {
+				bkt[sInt[j]]--;
+				sa[bkt[sInt[j]]] = j;
+			}
+		}
+		System.out.println("Step 3: " + Arrays.toString(sa));
+
 		return sa;
 
 	}
@@ -275,6 +326,24 @@ public class SADSalg {
 		return dest;
 	}
 
+	private static int[] getBuckets(int[] sInt, int[] bkt, int n, int k, int end) {
+		int sum = 0;
+		for (int i = 0; i < k + 1; i++) {
+			bkt[i] = 0;
+		}
+		for (int i = 0; i < n; i++) {
+			bkt[sInt[i]] += 1;
+		}
+		for (int i = 0; i < k + 1; i++) {
+			sum += bkt[i];
+			if (end == 1) {
+				bkt[i] = sum;
+			} else {
+				bkt[i] = sum - bkt[i];
+			}
+		}
+		return bkt;
+	}
 
 	/**
 	 * d = 2
