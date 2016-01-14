@@ -44,7 +44,6 @@ public class SADSalg {
 			genom = sb.toString();
 			genom = genom.replace("\n", "").replace("\r", "");
 			// System.out.println(genom.length());
-			// genom = genom.substring(0, genom.length() - 1);
 			n = genom.length() + 1;
 			sa = new int[n];
 			s = genom.toCharArray();
@@ -63,12 +62,13 @@ public class SADSalg {
 		sa = sads(sInt, sa, n, K);
 
 		String result = Arrays.toString(sa);
+		// System.out.println(result);
 
-		PrintWriter out = new PrintWriter(args[1]);
+		PrintWriter writer = new PrintWriter(args[1], "UTF-8");
+		writer.println(result);
+		writer.close();
 
-		out.println(result);
 
-		// TODO write to file
 		long estimatedTime = System.nanoTime() - startTime;
 		System.out.println("Estimated time: " + estimatedTime / 1000000000.0 + "s");
 	}
@@ -91,7 +91,7 @@ public class SADSalg {
 		// System.out.println("Beginning");
 		// System.out.println("-------------------------");
 		// System.out.println("S:" + Arrays.toString(sInt));
-		// // System.out.println(sInt.length);
+
 		// System.out.println("SA: " + Arrays.toString(sa));
 		// System.out.println("n: " + n);
 		// System.out.println("K: " + k);
@@ -127,13 +127,6 @@ public class SADSalg {
 		// System.out.println("Pass 4: " + Arrays.toString(s1));
 		// System.out.println("----------------------------");
 
-		// fill SA array with last two sorted d-crit arrays
-		// System.arraycopy(sa1, 0, sa, 0, sa1.length);
-		// System.arraycopy(s1, 0, sa, (sa.length - s1.length), s1.length);
-		//
-		// System.out.println("sa: " + Arrays.toString(sa));
-
-
 		// name d-critical array
 		for (int i = n1 - 1; i >= 0; i--) {
 			int j = 2 * i;
@@ -143,15 +136,6 @@ public class SADSalg {
 		for (int i = 2 * (n1 - 1) + 3; i < n; i += 2) {
 			sa[i] = -1;
 		}
-
-		// --------------------------------------------------------------
-		// String tmp = new String(s);
-		// int strlen = tmp.length();
-		// int[] sInt = new int[strlen];
-		// for (int i = 0; i < strlen; i++) {
-		// sInt[i] = s[i]; // - '0'
-		// }
-		// --------------------------------------------------------------
 
 		// System.out.println("sa: " + Arrays.toString(sa));
 		int name = 0;
@@ -227,7 +211,6 @@ public class SADSalg {
 			i -= 2;
 		}
 		s1 = Arrays.copyOfRange(sa, n - n1, n);
-		// System.arraycopy(sa, n - n1 + 1, s1, 0, (n - n1 - 1));
 		// System.out.println("s1: " + Arrays.toString(s1));
 
 		if (name < n1) {
@@ -250,7 +233,6 @@ public class SADSalg {
 		int[] bkt = new int[k + 1];
 		bkt = getBuckets(sInt, bkt, n, k, 1);
 
-		// n1 = s1.length;
 		for (i = 0; i < n1; i++) {
 			if (sa1[i] >= 0) {
 				sa1[i] = s1[sa1[i]];
@@ -440,9 +422,7 @@ public class SADSalg {
 				dCrit.add(i);
 			}
 		}
-		// if (dCritical[t.length - 3] && !dCritical[t.length - 1]) {
 		dCrit.add(t.length - 1);
-		// }
 
 		int[] sa1 = new int[dCrit.size()];
 		for (int i = 0; i < sa1.length; i++) {
@@ -463,7 +443,7 @@ public class SADSalg {
 	 * @return array of L-type and S-type indicators
 	 */
 	private static boolean[] scanSLtype(int[] genomArray) {
-		// TODO možda zamijeniti boolean vrijednosti
+
 		int n = genomArray.length;
 		boolean[] t = new boolean[n];
 		t[n - 1] = true;
@@ -478,20 +458,6 @@ public class SADSalg {
 		}
 		return t;
 
-		// t[genomArray.length - 1] = true; // last symbol is always S-type
-		//
-		// for (int i = genomArray.length - 2; i >= 0; i--) {
-		// if (genomArray[i] < genomArray[i + 1]) {
-		// t[i] = true; // S-type
-		// } else if (genomArray[i] == genomArray[i + 1]) {
-		// t[i] = t[i + 1];
-		// } else {
-		// t[i] = false; // L-type
-		// }
-		// }
-		// printBooleanArray(t);
-
-		// return t;
 	}
 
 }
