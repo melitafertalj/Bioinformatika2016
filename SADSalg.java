@@ -16,6 +16,9 @@ public class SADSalg {
 	 */
 	public static void main(String[] args) throws IOException {
 
+		long startTime = System.nanoTime();
+		// ... the code being measured ...
+
 		int K = 255, n = 0;
 		String genom = null;
 		int[] sa = null;
@@ -36,7 +39,8 @@ public class SADSalg {
 				line = br.readLine();
 			}
 			genom = sb.toString();
-			genom = genom.substring(0, genom.length() - 2);
+			System.out.println(genom);
+			genom = genom.substring(0, genom.length() - 1);
 			n = genom.length();
 			sa = new int[n];
 			s = genom.toCharArray();
@@ -53,7 +57,8 @@ public class SADSalg {
 		sa = sads(sInt, sa, n, K);
 
 		// TODO write to file
-
+		long estimatedTime = System.nanoTime() - startTime;
+		System.out.println("Estimated time: " + estimatedTime / 10000000.0 + "s");
 	}
 
 	/**
@@ -93,19 +98,15 @@ public class SADSalg {
 
 		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 3);
 		System.out.println("Pass 1: " + Arrays.toString(sa1));
-		System.out.println("Bucket sort pass 1 done");
 
 		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 2);
 		System.out.println("Pass 2: " + Arrays.toString(s1));
-		System.out.println("Bucket sort pass 2 done");
 
 		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 1);
 		System.out.println("Pass 3: " + Arrays.toString(sa1));
-		System.out.println("Bucket sort pass 3 done");
 
 		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 0);
 		System.out.println("Pass 4: " + Arrays.toString(s1));
-		System.out.println("Bucket sort pass 4 done");
 		System.out.println("----------------------------");
 
 		// fill SA array with last two sorted d-crit arrays
@@ -134,7 +135,7 @@ public class SADSalg {
 		// }
 		// --------------------------------------------------------------
 
-		System.out.println("sa: " + Arrays.toString(sa));
+		// System.out.println("sa: " + Arrays.toString(sa));
 		int name = 0;
 		int[] c = { -1, -1, -1, -1 }; // d = 2 -> s-crit substring length is 4
 
@@ -190,8 +191,6 @@ public class SADSalg {
 			}
 			if (pos % 2 == 0) {
 				pos--;
-			} else {
-				pos -= 2; // možebitni belaj
 			}
 			sa[pos] = name - 1; // hax
 		}
@@ -233,9 +232,11 @@ public class SADSalg {
 		int[] bkt = new int[k + 1];
 		bkt = getBuckets(sInt, bkt, n, k, 1);
 
-		n1 = s1.length;
+		// n1 = s1.length;
 		for (i = 0; i < n1; i++) {
-			sa1[i] = s1[sa1[i]];
+			if (sa1[i] >= 0) {
+				sa1[i] = s1[sa1[i]];
+			}
 		}
 		for (i = n1; i < n; i++) {
 			sa[i] = -1;
@@ -356,10 +357,10 @@ public class SADSalg {
 
 		boolean[] dCritical = new boolean[t.length];
 		List<Integer> dCrit = new ArrayList<Integer>();
-		// if (t[0] && !t[1]) {
-		// dCritical[1] = true;
-		// dCrit.add(1);
-		// }
+		if (!t[0] && t[1]) {
+			dCritical[1] = true;
+			dCrit.add(1);
+		}
 		for (int i = 2; i < t.length - 1; i++) {
 			// if t[i] = LMS character OR
 			if (!t[i - 1] && t[i] || dCritical[i - 2] && !(!t[i] && t[i + 1]) && !dCritical[i - 1]) {
@@ -367,14 +368,12 @@ public class SADSalg {
 				dCrit.add(i);
 			}
 		}
-		if (t[0] && !t[1] && !dCritical[2]) {
-			dCritical[1] = true;
-			dCrit.add(1);
-		}
+
 		dCrit.add(t.length - 1);
 
 		int[] sa1 = new int[dCrit.size()];
 		for (int i = 0; i < sa1.length; i++) {
+
 			sa1[i] = dCrit.get(i).intValue();
 		}
 		return sa1;
@@ -392,33 +391,34 @@ public class SADSalg {
 	 */
 	private static boolean[] scanSLtype(int[] genomArray) {
 		// TODO možda zamijeniti boolean vrijednosti
-		boolean[] t = new boolean[genomArray.length];
-		t[genomArray.length - 1] = true; // $ is always S-type
-
-		for (int i = genomArray.length - 2; i >= 0; i--) {
-			if (genomArray[i] < genomArray[i + 1]) {
-				t[i] = true; // S-type
+		int n = genomArray.length;
+		boolean[] t = new boolean[n];
+		t[n - 1] = true;
+		for (int i = n - 2; i > -1; i--) {
+			if (genomArray[i] == 0) {
+				t[i] = true;
+			} else if (genomArray[i] < genomArray[i + 1]) {
+				t[i] = true;
 			} else if (genomArray[i] == genomArray[i + 1]) {
 				t[i] = t[i + 1];
-			} else {
-				t[i] = false; // L-type
 			}
 		}
+		return t;
+
+		// t[genomArray.length - 1] = true; // last symbol is always S-type
+		//
+		// for (int i = genomArray.length - 2; i >= 0; i--) {
+		// if (genomArray[i] < genomArray[i + 1]) {
+		// t[i] = true; // S-type
+		// } else if (genomArray[i] == genomArray[i + 1]) {
+		// t[i] = t[i + 1];
+		// } else {
+		// t[i] = false; // L-type
+		// }
+		// }
 		// printBooleanArray(t);
 
-		return t;
-	}
-
-	private static void printBooleanArray(boolean[] t) {
-		for (int i = 0; i < t.length; i++) {
-			if (t[i]) {
-				System.out.print("1");
-			} else {
-				System.out.print("0");
-			}
-		}
-		System.out.println();
-
+		// return t;
 	}
 
 }
