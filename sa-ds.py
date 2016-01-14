@@ -250,6 +250,7 @@ def SA_DS(S, SA, n, K):
 
 
 #main
+start = time.clock()
 K = 255
 
 if len(sys.argv) != 3:
@@ -275,11 +276,12 @@ else:
     SA = [0] * n #result
 
 ##    outputFile = open(sys.argv[2], "w")
-    start = time.clock()
     SA_DS(S, SA, n, K)
-    end = time.clock()
-    print 'Time elapsed (in seconds): ', end - start
-
+    
     with open(sys.argv[2], "w") as outputFile:
         outputFile.write(', '.join(str(x) for x in SA))
+end = time.clock()
+print 'Time elapsed (in seconds): ', end - start
+
+    
 ##    outputFile.close()

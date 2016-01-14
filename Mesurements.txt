@@ -1,0 +1,16 @@
+Bio-Linux test results
+
+Test file	Time (sec)	Memory (kB)
+clo1.txt	0.003846	  5412
+clo2.txt	0.006575	  5412
+clo3.txt	0.044902	  5476
+clo4.txt	0.068974	  5672
+clo5.txt	0.157831	  6188
+clo6.txt	0.368432	  8124
+clo7.txt	0.994146	 13328
+clo8.txt	3.932995	 35676
+clo9.txt	6.079237	 64820
+clo10.txt	10.442177	108228
+clo11.txt	12.910553	121508
+entero.txt	44.540255	338692
+haemo.txt	30.931685	203800
