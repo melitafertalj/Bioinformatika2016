@@ -15,7 +15,7 @@ core:
 tryall:
 	$(CC) -c main.cpp $(CC_OPTION)
 Makeours:
-	$(CC) -o is sads.o main.o  $(CC_OPTION)
+	$(CC) -o sads sads.o main.o  $(CC_OPTION)
 Clear:
 	rm *.o
      
