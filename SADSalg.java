@@ -13,7 +13,7 @@ public class SADSalg {
 	/**
 	 * main program. opens file, runs the algorithm then writes the result array
 	 * to new file.
-	 * 
+	 *
 	 * @param args
 	 *            input file, output file
 	 * @throws IOException
@@ -74,12 +74,17 @@ public class SADSalg {
 	}
 
 	/**
+	 * The main body of the Nong, Zhang, Chan SA-DS algorithm
 	 *
 	 * @param k
+	 *            number of different symbols
 	 * @param n
-	 * @param s1
-	 * @param sa1
-	 * @return
+	 *            size of string
+	 * @param sInt
+	 *            input array
+	 * @param sa
+	 *            output array
+	 * @return output array
 	 */
 	public static int[] sads(int[] sInt, int[] sa, int n, int k) {
 
@@ -289,6 +294,25 @@ public class SADSalg {
 
 	}
 
+	/**
+	 * Uses bucket sort to sort elements by first symbol.
+	 *
+	 * @param src
+	 *            source array
+	 * @param dest
+	 *            destination array
+	 * @param s
+	 *            array of symbols
+	 * @param t
+	 *            array of LS types (1 for S, 0 for L)
+	 * @param n
+	 *            length of string
+	 * @param n1
+	 *            length of source array
+	 * @param h
+	 *            (d + 2) - 1
+	 * @return destination array
+	 */
 	private static int[] bucketSortLS(int[] src, int[] dest, int[] s, boolean[] t, int n, int n1, int h) {
 		int start = 0;
 		int end = n1 - 1;
@@ -308,6 +332,25 @@ public class SADSalg {
 		return dest;
 	}
 
+	/**
+	 * Uses bucket sort to sort elements by the rest of the symbols
+	 *
+	 * @param src
+	 *            source array
+	 * @param dest
+	 *            destination array
+	 * @param s
+	 *            array of symbols
+	 * @param t
+	 *            array of LS types (1 for S, 0 for L)
+	 * @param n
+	 *            length of string
+	 * @param n1
+	 *            length of source array
+	 * @param h
+	 *            (d + 2) - 1
+	 * @return destination array
+	 */
 	private static int[] bucketSort(int[] src, int[] dest, int[] s, boolean[] t, int n, int n1, int k, int[] c, int d) {
 
 		int sum = 0;
@@ -340,6 +383,21 @@ public class SADSalg {
 		return dest;
 	}
 
+	/**
+	 * Returns bucket for induction.
+	 *
+	 * @param sInt
+	 *            source array
+	 * @param bkt
+	 *            bucket array
+	 * @param n
+	 *            length of source
+	 * @param k
+	 *            number of symbols
+	 * @param end
+	 *            Step counter
+	 * @return bucket array
+	 */
 	private static int[] getBuckets(int[] sInt, int[] bkt, int n, int k, int end) {
 		int sum = 0;
 		for (int i = 0; i < k + 1; i++) {
@@ -360,11 +418,12 @@ public class SADSalg {
 	}
 
 	/**
-	 * d = 2
+	 * Locates d-critical substrings and puts index of first symbol into sa1
+	 * array
 	 *
 	 * @param t
-	 * @param j
-	 * @return
+	 *            LS type array
+	 * @return sa1 array of d-critical substrings
 	 */
 	private static int[] findDCriticalSubstrings(boolean[] t) {
 
