@@ -18,5 +18,7 @@ Instalacija i pokretanje:
 4. Pokrenite program
     mono Program.exe <put_do_ulazne_datoteke>
     
+Rezultat se zapisuje u direktorij odakle je pokrenut Program.exe u obliku output(<ime_ulazne_datoteke).txt
+    
 U repozirotiju (Bioinformatika/Tests) se vec nalaze test datoteke koje se mogu koristiti za provjeru funkcioniranja programa
 To su sintetski podaci clo1.txt-clo11.txt i stvarne sekvence haemo.txt i entero.txt
