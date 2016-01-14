@@ -219,8 +219,7 @@ public class SADSalg {
 			System.out.println("Recursion end!");
 		}
 
-
-		// sa = induce(sa1);
+		// TODO sa = induce(sa1);
 		return sa;
 
 	}
@@ -276,24 +275,6 @@ public class SADSalg {
 		return dest;
 	}
 
-	private static boolean isNumberofBuckets(int c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	private static String nameDCriticals(int[] b) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static int[] sortDCriticals(int[] p1, int[] b) {
-		int[] temp = p1;
-		for (int i = 0; i < 4; i++) {
-
-
-		}
-		return null;
-	}
 
 	/**
 	 * d = 2
@@ -303,28 +284,6 @@ public class SADSalg {
 	 * @return
 	 */
 	private static int[] findDCriticalSubstrings(boolean[] t) {
-		// int i = -1, j = 0;
-		//
-		// List<Integer> p1List = new ArrayList<Integer>();
-		//
-		// while(i < n-1) {
-		// boolean isLMS = false;
-		// for (int k = 2; k <= d+1; k++) {
-		// if(t[i + k -1] && t[i + k]){
-		// isLMS = true;
-		// break;
-		// }
-		// }
-		// if(j == 0 && isLMS) {
-		// i = i + d;
-		// continue;
-		// }
-		// isLMS ? i = i + k : i + d;
-		//
-		//
-		// [j] = i;
-		// j = j + 1;
-		// }
 
 		boolean[] dCritical = new boolean[t.length];
 		List<Integer> dCrit = new ArrayList<Integer>();
@@ -352,27 +311,6 @@ public class SADSalg {
 		return sa1;
 	}
 
-	// private static boolean[] findLMS(boolean[] t) {
-	//
-	// boolean[] LMS = new boolean[t.length];
-	// for(int i = 1; i < t.length; i++) {
-	// if(t[i-1] && !t[i]) { //if (i-1 = L) && (i = S)
-	// LMS[i] = true;
-	// }
-	// }
-	//
-	// return LMS;
-	// }
-
-	private static int[] induce(int[] sa1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static void computeSA1() {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * Checks each character in String if it's L-type or S-type. L-type if the
