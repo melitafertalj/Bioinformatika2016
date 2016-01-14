@@ -1,0 +1,24 @@
+How to compile and run code on bio-linux:
+
+1.  Install C/C++ compiler and related tools:
+
+$ sudo apt-get update
+$ sudo apt-get install build-essential manpages-dev
+
+2. Verify installation:
+
+$ whereis gcc
+$ which gcc
+$ gcc --version
+
+3. Compile: 
+
+$ make
+
+4. Run with default destination (d = 2):
+
+$ ./sads input.txt output.dat
+
+or run with specific destination:
+
+$ ./sads input.txt output.dat 3
