@@ -20,6 +20,7 @@ public class SADSalg {
 		String genom = null;
 		int[] sa = null;
 		char[] s = null;
+		int[] sInt = null;
 
 		BufferedReader br = new BufferedReader(new FileReader("string.txt"));
 		try {
@@ -39,13 +40,17 @@ public class SADSalg {
 			n = genom.length();
 			sa = new int[n];
 			s = genom.toCharArray();
+			sInt = new int[n];
+			for (int i = 0; i < n; i++) {
+				sInt[i] = s[i];
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			br.close();
 		}
 
-		sa = sads(s, sa, n, K);
+		sa = sads(sInt, sa, n, K);
 
 		// TODO write to file
 
@@ -59,45 +64,46 @@ public class SADSalg {
 	 * @param sa1
 	 * @return
 	 */
-	public static int[] sads(char[] s, int[] sa, int n, int k) {
+	public static int[] sads(int[] sInt, int[] sa, int n, int k) {
 
 		System.out.println("Beginning");
 		System.out.println("-------------------------");
-		System.out.println("S:" + Arrays.toString(s));
+		System.out.println("S:" + Arrays.toString(sInt));
 		System.out.println("SA: " + Arrays.toString(sa));
 		System.out.println("n: " + n);
 		System.out.println("K: " + k);
 
-		boolean[] t = scanSLtype(s);
+		boolean[] t = scanSLtype(sInt);
 		System.out.println("t: " + Arrays.toString(t));
 
-		// int[] sa1 = sa;
-		int[] sa1 = findDCriticalSubstrings(t); // d=2
+		sa = new int[sa.length];
+		int[] sa1 = sa;
+		sa1 = findDCriticalSubstrings(t); // d=2
 		int n1 = sa1.length;
 
 		System.out.println("SA1: " + Arrays.toString(sa1));
 
-		int[] s1 = new int[n - n1 - 1];
+		int[] s1 = new int[n1];
 
 		int[] bucket = new int[k + 1];
 
-		s1 = bucketSortLS(sa1, s1, s, t, n, n1, 3);
+		s1 = bucketSortLS(sa1, s1, sInt, t, n, n1, 3);
 		System.out.println("---------------------------------");
 		System.out.println("LS pass: " + Arrays.toString(s1));
 
-		sa1 = bucketSort(s1, sa1, s, t, n, n1, k, bucket, 3);
+		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 3);
 		System.out.println("Pass 1: " + Arrays.toString(sa1));
 		System.out.println("Bucket sort pass 1 done");
 
-		s1 = bucketSort(sa1, s1, s, t, n, n1, k, bucket, 2);
+		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 2);
 		System.out.println("Pass 2: " + Arrays.toString(s1));
 		System.out.println("Bucket sort pass 2 done");
 
-		sa1 = bucketSort(s1, sa1, s, t, n, n1, k, bucket, 1);
+		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 1);
 		System.out.println("Pass 3: " + Arrays.toString(sa1));
 		System.out.println("Bucket sort pass 3 done");
 
-		s1 = bucketSort(sa1, s1, s, t, n, n1, k, bucket, 0);
+		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 0);
 		System.out.println("Pass 4: " + Arrays.toString(s1));
 		System.out.println("Bucket sort pass 4 done");
 		System.out.println("----------------------------");
@@ -120,12 +126,12 @@ public class SADSalg {
 		}
 
 		// --------------------------------------------------------------
-		String tmp = new String(s);
-		int strlen = tmp.length();
-		int[] sInt = new int[strlen];
-		for (int i = 0; i < strlen; i++) {
-			sInt[i] = s[i]; // - '0'
-		}
+		// String tmp = new String(s);
+		// int strlen = tmp.length();
+		// int[] sInt = new int[strlen];
+		// for (int i = 0; i < strlen; i++) {
+		// sInt[i] = s[i]; // - '0'
+		// }
 		// --------------------------------------------------------------
 
 		System.out.println("sa: " + Arrays.toString(sa));
@@ -184,42 +190,42 @@ public class SADSalg {
 			}
 			if (pos % 2 == 0) {
 				pos--;
+			} else {
+				pos -= 2; // možebitni belaj
 			}
-			sa[2 * i + 1] = name - 1;
+			sa[pos] = name - 1; // hax
 		}
 
 
 		System.out.println("sa: " + Arrays.toString(sa));
 
-		// TODO tu je belaj!
+		// copy names in new array (s1)
 		int i = (n / 2) * 2 - 1;
 		int j = n - 1;
 		while (i >= 0 && j >= 0) {
 			if (sa[i] != -1) {
 				sa[j] = sa[i];
-				j -= i;
+				j -= 1;
 			}
 			i -= 2;
 		}
-
-		System.arraycopy(sa, n1 + 1, s1, 0, (n - n1 - 1));
-		System.out.println("sa: " + Arrays.toString(sa));
+		s1 = Arrays.copyOfRange(sa, n - n1, n);
+		// System.arraycopy(sa, n - n1 + 1, s1, 0, (n - n1 - 1));
 		System.out.println("s1: " + Arrays.toString(s1));
 
-		// for(int c: s1.toCharArray()) {
-		// if(isNumberofBuckets(c)) {
-		// computeSA1();
-		// }
-		// else {
-		// sads(s1, sa1);
-		// }
-		// }
+		if (name < n1) {
+			System.out.println("Recursion:");
+			sa1 = sads(s1, sa1, n1, name - 1);
+			System.out.println("Recursion end!");
+		}
+
+
 		// sa = induce(sa1);
 		return sa;
 
 	}
 
-	private static int[] bucketSortLS(int[] src, int[] dest, char[] s, boolean[] t, int n, int n1, int h) {
+	private static int[] bucketSortLS(int[] src, int[] dest, int[] s, boolean[] t, int n, int n1, int h) {
 		int start = 0;
 		int end = n1 - 1;
 		for (int i = 0; i < n1; i++) {
@@ -238,7 +244,7 @@ public class SADSalg {
 		return dest;
 	}
 
-	private static int[] bucketSort(int[] src, int[] dest, char[] s, boolean[] t, int n, int n1, int k, int[] c, int d) {
+	private static int[] bucketSort(int[] src, int[] dest, int[] s, boolean[] t, int n, int n1, int k, int[] c, int d) {
 
 		int sum = 0;
 
@@ -322,16 +328,20 @@ public class SADSalg {
 
 		boolean[] dCritical = new boolean[t.length];
 		List<Integer> dCrit = new ArrayList<Integer>();
-		if (t[0] && !t[1]) {
-			dCritical[1] = true;
-			dCrit.add(1);
-		}
+		// if (t[0] && !t[1]) {
+		// dCritical[1] = true;
+		// dCrit.add(1);
+		// }
 		for (int i = 2; i < t.length - 1; i++) {
 			// if t[i] = LMS character OR
 			if (!t[i - 1] && t[i] || dCritical[i - 2] && !(!t[i] && t[i + 1]) && !dCritical[i - 1]) {
 				dCritical[i] = true;
 				dCrit.add(i);
 			}
+		}
+		if (t[0] && !t[1] && !dCritical[2]) {
+			dCritical[1] = true;
+			dCrit.add(1);
 		}
 		dCrit.add(t.length - 1);
 
@@ -373,7 +383,7 @@ public class SADSalg {
 	 *            String to be checked
 	 * @return array of L-type and S-type indicators
 	 */
-	private static boolean[] scanSLtype(char[] genomArray) {
+	private static boolean[] scanSLtype(int[] genomArray) {
 		// TODO možda zamijeniti boolean vrijednosti
 		boolean[] t = new boolean[genomArray.length];
 		t[genomArray.length - 1] = true; // $ is always S-type
