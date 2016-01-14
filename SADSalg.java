@@ -103,10 +103,11 @@ public class SADSalg {
 		System.out.println("----------------------------");
 
 		// fill SA array with last two sorted d-crit arrays
-		System.arraycopy(sa1, 0, sa, 0, sa1.length);
-		System.arraycopy(s1, 0, sa, (sa.length - s1.length), s1.length);
+		// System.arraycopy(sa1, 0, sa, 0, sa1.length);
+		// System.arraycopy(s1, 0, sa, (sa.length - s1.length), s1.length);
+		//
+		// System.out.println("sa: " + Arrays.toString(sa));
 
-		System.out.println("sa: " + Arrays.toString(sa));
 
 		// name d-critical array
 		for (int i = n1 - 1; i >= 0; i--) {
@@ -118,15 +119,26 @@ public class SADSalg {
 			sa[i] = -1;
 		}
 
+		// --------------------------------------------------------------
+		String tmp = new String(s);
+		int strlen = tmp.length();
+		int[] sInt = new int[strlen];
+		for (int i = 0; i < strlen; i++) {
+			sInt[i] = s[i]; // - '0'
+		}
+		// --------------------------------------------------------------
+
+		System.out.println("sa: " + Arrays.toString(sa));
 		int name = 0;
 		int[] c = { -1, -1, -1, -1 }; // d = 2 -> s-crit substring length is 4
 
 		for (int i = 0; i < n1; i++) {
 			int pos = sa[2 * i];
 			boolean diff = false;
+			// compare substring to the substring in c array
 			for (int h = 0; h < 3; h++) {
-				if (pos + h < n) {
-					if (s[pos + h] != c[h]) {
+				if ((pos + h) < n) {
+					if (sInt[pos + h] != c[h]) {
 						diff = true;
 						break;
 					}
@@ -137,41 +149,50 @@ public class SADSalg {
 					}
 				}
 			}
-			if (pos + 3 < n) {
+			// compare ...
+			if ((pos + 3) < n) {
 				int ls = 0;
 				if (t[pos + 3]) {
 					ls = 1;
 				}
-				if ((s[pos + 3] * 2 + ls) != c[3]) {
+				if ((sInt[pos + 3] * 2 + ls) != c[3]) { // TODO
 					diff = true;
 				} else {
-					if (c[3] != -1) {
+					if (c[3] == -1) {
 						diff = true;
 					}
 				}
-				if (diff) {
-					name++;
-					for (int h = 0; h < 4; h++) {
-						if (pos + h < n) {
-							c[h] = s[pos + h];
-						} else {
-							c[h] = -1;
-						}
-					}
-					if (pos + 3 < n) {
-						c[3] = s[pos + 3] * 2 + ls;
-					} else {
-						c[3] = -1;
-					}
-				}
-				if (pos % 2 == 0) {
-					pos--;
-				}
-				sa[pos] = name - 1;
 			}
+			if (diff) {
+				name++;
+				for (int h = 0; h < 4; h++) {
+					if (pos + h < n) {
+						c[h] = sInt[pos + h];
+					} else {
+						c[h] = -1;
+					}
+				}
+				if ((pos + 3) < n) { //if not $$$$ or xx$$
+					int ls = 0;
+					if (t[pos + 3]) {
+						ls = 1;
+					}
+					c[3] = sInt[pos + 3] * 2 + ls;
+				} else {
+					c[3] = -1;
+				}
+			}
+			if (pos % 2 == 0) {
+				pos--;
+			}
+			sa[2 * i + 1] = name - 1;
 		}
 
-		int i = n / 2 * 2 - 1;
+
+		System.out.println("sa: " + Arrays.toString(sa));
+
+		// TODO tu je belaj!
+		int i = (n / 2) * 2 - 1;
 		int j = n - 1;
 		while (i >= 0 && j >= 0) {
 			if (sa[i] != -1) {
@@ -180,9 +201,10 @@ public class SADSalg {
 			}
 			i -= 2;
 		}
-		System.arraycopy(sa, 0, s1, n1, (n - n1));
 
-		System.out.println("s1 " + Arrays.toString(s1));
+		System.arraycopy(sa, n1 + 1, s1, 0, (n - n1 - 1));
+		System.out.println("sa: " + Arrays.toString(sa));
+		System.out.println("s1: " + Arrays.toString(s1));
 
 		// for(int c: s1.toCharArray()) {
 		// if(isNumberofBuckets(c)) {
@@ -260,7 +282,7 @@ public class SADSalg {
 
 	private static int[] sortDCriticals(int[] p1, int[] b) {
 		int[] temp = p1;
-		for(int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {
 
 
 		}
