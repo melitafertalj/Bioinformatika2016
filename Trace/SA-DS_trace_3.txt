@@ -1,0 +1,53 @@
+//Trace for student SA-DS code for d=3
+
+Computing suffix array by SA-DS on input.txt to output.dat
+d = 3
+Allocating input and output space: 85 bytes = 0.0001 MB
+Reading input string...
+Level: 0
+  Index  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+      S  m  m  i  i  s  s  i  i  s  s  i  i  p  p  i  i
+      t  0  0  1  1  0  0  1  1  0  0  1  1  0  0  0  0  1
+ D-crit  0  0  1  0  0  0  1  0  0  0  1  0  0  1  0  0  1
+     P1  2  6 10 13 16
+Time for sorting all the d-critical substrings: 0.01 seconds
+     SA 16 10  6  2 13
+Time for naming: 0.00 seconds
+     SA 16 10  6  2 13 -1 -1 -1 -1 -1 -1 -1  2  2  1  3  0
+     S1  2  2  1  3  0
+    SA1 16 10  6  2 13
+Reduction ratio: 0.29
+Level: 1
+  Index  0  1  2  3  4
+      S  2  2  1  3  0
+      t  0  0  1  0  1
+ D-crit  0  0  1  0  1
+     P1  2  4
+Time for sorting all the d-critical substrings: 0.00 seconds
+     SA  4  2
+Time for naming: 0.00 seconds
+     SA  4  2 -1 -1 -1 -1 -1 -1 -1 -1  1  0
+     S1  1  0
+    SA1  4  2
+Reduction ratio: 0.40
+    SA1  1  0
+Recursion ends
+Mean reduction ratio over iterations: 0.35
+Mean reduction ratio over characters: 0.32
+Level: 1
+ D-crit  0  0  1  0  1
+Step 1:  4  2 -1 -1 -1
+Step 2:  4  2  1  0  3
+Step 3:  4  2  1  0  3
+Time for sorting all the suffixes: 0.01 seconds
+Level: 0
+ D-crit  0  0  1  0  0  0  1  0  0  0  1  0  0  1  0  0  1
+Step 1: 16 -1 -1 -1 -1 -1 10  6  2 -1 -1 -1 -1 -1 -1 -1 -1
+Step 2: 16 15 14 -1 -1 -1 10  6  2  1  0 13 12  9  5  8  4
+Step 3: 16 15 14 10  6  2 11  7  3  1  0 13 12  9  5  8  4
+Time for sorting all the suffixes: 0.03 seconds
+File: input.txt, Size: 16 bytes, Memory: 6.3682 kB / 0.0062 MB, Time: 0.0780 s
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...Press any key to continue . . .
