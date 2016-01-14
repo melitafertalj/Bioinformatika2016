@@ -1,7 +1,7 @@
 
 Za prevođenje programa potrebno se pozicionirati u direktoriji u kojem se nalazi
 izvorni kod programa, te kompajlirati s  
-cc –Ofast –STD=c99 –o sa_ds.exe main.c suffix_array.c int_array.c sort_data.c bucket_array.c sa_ds.c
+cc –Ofast –std=c99 –o sa_ds.exe main.c suffix_array.c int_array.c sort_data.c bucket_array.c sa_ds.c
 
 Za pokretanje programa potrebno je zadati ulaznu i izlaznu datoteku kao 
 argumente prilikom pokretanja „SA-DS.exe ulazna_datoteka.txt izlazna_datoteka.txt“, 
