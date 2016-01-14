@@ -1,3 +1,4 @@
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -65,7 +66,11 @@ int main(int argc, char *argv[])
         report_error_and_exit("Unable to create initial suffix array!", EXIT_FAILURE);
     }
 
+    int start = time(NULL);
     sa_ds(string, suffix_array, D_LEN);
+    int end = time(NULL);
+
+    printf("%d", end - start);
 
     string->elements[string->size - 1] = '$'; // Replace the virtual sentinel with a visible character
     for (int i = 0; i < suffix_array->size; ++i)
