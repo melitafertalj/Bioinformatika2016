@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -16,7 +17,7 @@ void trackMemory(int mem); // mem tracker
 // print int array
 void printIntArr(char *msg, int *a, int n);
 // print char array, in given format fmt
-void prinCharArr(char *msg, unsigned char *a, int n, char *fmt);
+void printCharArr(char *msg, unsigned char *a, int n, char *fmt);
 
 #define s(i) (cs==sizeof(int)?((int*)s)[i]:((unsigned char *)s)[i])
 #define s1(i) (cs==sizeof(int)?((int*)s1)[i]:((unsigned char *)s1)[i])
@@ -154,7 +155,7 @@ int genP1(unsigned char *t, int *SA, int n)
   for (i = n - 1; i >= 1; i--) {
     LMS[i] = (t[i] == 1 && t[i - 1] == 0) ? 1 : 0;
   }
-  //prinCharArr("LMS", LMS, n, "%3d");
+  //printCharArr("D-crit", LMS, n, "%3d");
 
   for (i = dst + 1; i < n; i++) {
     if (LMS[i - dst - 1] == 1 || LMS[i - dst + 1] == 1) {
@@ -164,7 +165,7 @@ int genP1(unsigned char *t, int *SA, int n)
       LMS[i - dst] = (i - dst > 0 && LMS[i + 1] != 1 && !hasDcrit(LMS, i - dst + 1, i - 1)) ? 1 : 0;
     }
   }
-  prinCharArr("LMS", LMS, n, "%3d");
+  printCharArr("D-crit", LMS, n, "%3d");
 
   // construct SA=P1 based on LMS array
   n1 = 0;
@@ -200,8 +201,9 @@ void mySA_DS(unsigned char *s, int *SA, int n, int K, int m, int level) {
 
 #if TESTPRINT
   printIntArr("Index", NULL, n);
-  prinCharArr("S", s, n, "%3c");
-  prinCharArr("t", t, n, "%3d");
+  if (level == 0) printCharArr("S", s, n, "%3c");
+  else printIntArr("S", (int*)s, n);
+  printCharArr("t", t, n, "%3d");
 #endif
 
   //n1 = mycriticalChars(s, t, SA, n, cs);
@@ -255,20 +257,21 @@ void mySA_DS(unsigned char *s, int *SA, int n, int K, int m, int level) {
       newP1[i] = ++currval;
       ++name;
     }
+    // TODO: SA[n1 + pos / 2] = name - 1;
   }
+  //++name; // original
+
   //printIntArr("oldP1", oldP1, n1);
   //printIntArr("newP1", newP1, n1);
   
-  // originani algoritam ima pogrešku da ostavlja jedan -1 između SA i s1
-  SA[n1] = -1; // GAP
+  // originani algoritam ima pogrešku da ostavlja jedan -1 između SA i s1 ??
+  for (i = n1; i < m; ++i) SA[i] = -1; // GAP
   int oldIndex; // index of SA[i] in oldP1
   for (i = 0; i < n1; ++i) {
     oldIndex = srchArr(oldP1, SA[i], n1);
     //SA[n1 + oldIndex + 1] = newP1[i]; // there is a GAP !!!
-    //SA[m - (n1 - oldIndex) - 1] = newP1[i]; // no GAP  
     SA[m - (n1 - oldIndex)] = newP1[i]; // same GAP
   }
-  ++name; // for GAP
 
   delete[] oldP1;
   delete[] newP1;
@@ -348,5 +351,4 @@ void mySA_DS(unsigned char *s, int *SA, int n, int K, int m, int level) {
 
   delete[] bkt;
   delete[] t;
-
 }
