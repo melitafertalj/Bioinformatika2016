@@ -1,0 +1,21 @@
+Zahtjevi:
+
+1. Ukoliko nemate instalirani Mono, instalirajte ga
+    sudo apt-get install monodevelop
+    sudo apt-get install mono-mcs
+
+2. Ukoliko nemate instalirani git, instalirajte ga
+    sudo apt-get install git-all
+
+Instalacija i pokretanje:
+1. Klonirajte repozitorij github.com/melitafertalj/Bioinformatika2016, branch erik
+    git clone -b erik --single -branch https://github.com/melitafertalj/Bioinformatika2016
+2. Pozicionirajte se u folder Bioinformatika2016/Erik Percic/SA-DS/
+    cd Bioinformatika2016/Erik Percic/SA-DS
+3. Kompajlirajte program
+    mcs Program.cs
+4. Pokrenite program
+    mono Program.exe <put_do_ulazne_datoteke>
+    
+U repozirotiju (Bioinformatika/Tests) se vec nalaze test datoteke koje se mogu koristiti za provjeru funkcioniranja programa
+To su sintetski podaci clo1.txt-clo11.txt i stvarne sekvence haemo.txt i entero.txt
