@@ -35,6 +35,7 @@ public class SADSalg {
 
 			while (line != null) {
 				if (line.startsWith(">")) {
+					line = br.readLine();
 					continue;
 				}
 				sb.append(line);
