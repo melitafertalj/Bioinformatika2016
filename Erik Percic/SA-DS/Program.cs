@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SA_DS
 {
@@ -11,24 +11,45 @@ namespace SA_DS
         static int d = 2;
         static void Main(string[] args)
         {
-            var S = "mmiissiissiippii$";
-            S = S.ToUpper();
-
-            List<int> Sint = new List<int>();
-
-            // transform string -> List<int>
-            foreach(char c in S)
+            for (int i = 1; i <= 12; i++)
             {
-                Sint.Add(val(c));
-            }
+                StringBuilder s = new StringBuilder();
+                string line;
 
-            List<int> SA = SADS(Sint);
-            Console.WriteLine("Result: ");
-            foreach(int i in SA)
-            {
-                Console.Write("{0} ", i);
+                System.IO.StreamReader file =
+                    new System.IO.StreamReader(args[0]);
+                while ((line = file.ReadLine()) != null)
+                {
+                    if (line[0]!='>') {
+                        s.Append(line);
+                    }
+                }
+                file.Close();
+
+                string S = s.ToString() + "$";
+
+                S = S.ToUpper();
+
+                List<int> Sint = new List<int>();
+
+                // transform string -> List<int>
+                foreach (char c in S)
+                {
+                    Sint.Add(val(c));
+                }
+
+                List<int> SA = SADS(Sint);
+
+                // result output saved as output(name_of_input).txt
+                using (StreamWriter writer = new StreamWriter("output("+args[0]+").txt"))
+                {
+                    foreach (int j in SA)
+                    {
+                        writer.WriteLine(j);
+                    }
+                }
+                return;
             }
-            Console.ReadKey();
             
         }
         private static List<int> SADS(List<int> S)
@@ -63,7 +84,7 @@ namespace SA_DS
         }
         private static List<bool> CreateLSList(List<int> S)
         {
-            // L/S list where S is true and L is false
+            // creates a L/S list where S is true and L is false
             List<bool> t = new List<bool>();
 
             for (int i = S.Count - 1; i >= 0; i--)
@@ -139,7 +160,7 @@ namespace SA_DS
                 valueLists.Last().Add(0);
             }
 
-            // this works only for d=2
+            // bucket sorting by each element of thesubstring (d+2=4)
             var result=valueLists.OrderBy(l => l[1]).ThenBy(l => l[2]).ThenBy(l => l[3]).ThenBy(l => l[4]);
             valueLists=result.ToList();
 
@@ -283,6 +304,7 @@ namespace SA_DS
 
         private static int[] makeArrayOfUniqueElements(List<int> iS)
         {
+            // creates a sorted Array of unique elements found in iS
             List<int> seenElements = new List<int>();
             foreach(int i in iS)
             {
@@ -311,21 +333,12 @@ namespace SA_DS
             }
             return counter;
         }
-        private static List<int> pushFrom(List<int> l,int element,String s, int currPos)
-        {
-            if (s == "start")
-            {
-                l[currPos] = element;
-            }
-            else
-            {
-                l.Add(element);
-                l.RemoveAt(0);
-            }
-            return l;
-        }
+        
         private static List<int> setHead(List<List<int>>SA, string where)
         {
+            // for a input list of lists and instruction where
+            // returns a list of header locations
+
             List<int> answer = new List<int>();
 
             if (where == "start")
@@ -344,6 +357,7 @@ namespace SA_DS
             }
             return answer;
         }
+
         private static int val(char c)
         {
             int i = c;
@@ -379,4 +393,3 @@ namespace SA_DS
         }
     }
 }
-// testing checking into a local branch
