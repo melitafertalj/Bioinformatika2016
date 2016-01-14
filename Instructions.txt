@@ -1,0 +1,44 @@
+Installation and running:
+-----------------------------------------------------------------------------
+Many Linux distributions have Python preinstalled, and Bio Linux is one of
+them, so to run this implementation of SA-DS algorithm, you would only need
+to:
+
+   1) Clone this Git branch.
+
+   2) Position the terminal in the correct folder (the one containing the 
+      script) and run the script using:
+
+          python sa-ds.py <input.txt> <output.txt>
+
+Input and output may be in other folders but then make sure the path is
+specified.
+
+
+Additional information
+-----------------------------------------------------------------------------
+This branch contains two scripts: sa-ds.py and sa-ds-elaborate.py. They both
+have the same algorithm implemented in the same way. The difference is in
+the output:
+
+   a) If you want to see only the suffix array in your output file, then run
+      sa-ds.py.
+
+   b) If you are interested to see how the algorithm works, run the 
+      sa-ds-elaborate.py and the output will contain step by step 
+      information.
+
+The Tests folder contains 13 testing inputs: 11 synthetic arrays (clo1.txt - 
+clo11.txt) and 2 genomes of existing bacteria (haemo.txt and entero.txt). 
+
+The Output folder contains the results sa-ds.py gives for any of these 
+testing examples from the Tests folder.
+
+The file titled Measurements.txt contains information on how much time and 
+memory it took the sa-ds.py to provide results for 13 examples enclosed in 
+the Tests folder.
+
+There is also a script titled sortingTest.py which, for provided input and 
+output produced by sa-ds.py (it will not work for the output of 
+sa-ds-elaborate.py), checks if the output is correctly sorted, and finds the 
+position of the first error if it is not.

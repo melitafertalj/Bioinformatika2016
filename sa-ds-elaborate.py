@@ -90,22 +90,22 @@ def getBuckets(S, bkt, n, K, end):
 def SA_DS(S, SA, n, K):
     outputFile.write('Beginning\n')
     outputFile.write('-------------------------------\n')
-    outputFile.write('S: ' + str(S) + '\n')
-    outputFile.write('SA: ' + str(SA) + '\n')
-    outputFile.write('n: ' + str(n) + '\n') 
-    outputFile.write('K: ' + str(K) + '\n') 
+    outputFile.write('S: ' + str(S) + '\n\n')
+    outputFile.write('SA: ' + str(SA) + '\n\n')
+    outputFile.write('n: ' + str(n) + '\n\n') 
+    outputFile.write('K: ' + str(K) + '\n\n') 
     
     #LS categorization
     t = [0] * n
     LSTypeChar(S, t, n)
-    outputFile.write('t: ' + str(t) + '\n')
+    outputFile.write('t: ' + str(t) + '\n\n')
     
     #d-critical characters
     SA1 = SA #list of n ints, initially zeros
     n1 = dCriticalChars(S, t, n, SA1, 2) #d = 2
     SA1 = SA1[0:n1] #cut away unnecessary zeros
 
-    outputFile.write('SA1: ' + str(SA1) + '\n')
+    outputFile.write('SA1: ' + str(SA1) + '\n\n')
     
     #bucket sorting
     s1 = SA[0:n1] #list of n1 ints, initially zeros
@@ -115,23 +115,23 @@ def SA_DS(S, SA, n, K):
     bkt = [0] * (K+1)
     #sorting 4-character 2-critical substrings by type of 4th character
     bucketSortLS(SA1, s1, S, t, n, n1, 3)  # 3 = d + 2 - 1
-    outputFile.write('LS pass: ' + str(s1) + '\n')
+    outputFile.write('LS pass: ' + str(s1) + '\n\n')
     
     #sorting 4-character 2-critical substring by 4th character
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 3)
-    outputFile.write('Pass 1: ' + str(SA1) + '\n')
+    outputFile.write('Pass 1: ' + str(SA1) + '\n\n')
     
     #sorting ... by 3rd character
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 2)
-    outputFile.write('Pass 2: ' + str(s1) + '\n')
+    outputFile.write('Pass 2: ' + str(s1) + '\n\n')
     
     #sorting ... by 2nd character
     bucketSort(s1, SA1, S, t, n, n1, K, bkt, 1)
-    outputFile.write('Pass 3: ' + str(SA1) + '\n')
+    outputFile.write('Pass 3: ' + str(SA1) + '\n\n')
     
     #sorting ... by 1st character
     bucketSort(SA1, s1, S, t, n, n1, K, bkt, 0)
-    outputFile.write('Pass 4: ' + str(s1) + '\n')
+    outputFile.write('Pass 4: ' + str(s1) + '\n\n')
     outputFile.write('-------------------------------\n')
 
     del bkt
@@ -194,7 +194,7 @@ def SA_DS(S, SA, n, K):
     s1 = SA[-n1 :]
     
     #solving reduced problem
-    outputFile.write('s1: ' + str(s1) + '\n')
+    outputFile.write('s1: ' + str(s1) + '\n\n')
     
     #recursion
     if name < n1:
@@ -210,7 +210,7 @@ def SA_DS(S, SA, n, K):
     
     outputFile.write('-------------------------------\n')
     outputFile.write('Inducing SA:\n')
-    outputFile.write('SA1: ' + str(SA1) + '\n')
+    outputFile.write('SA1: ' + str(SA1) + '\n\n')
     dCriticalChars(S, t, n, s1, 2)
     SA[-n1:] = s1
     bkt = [0] * (K+1)
@@ -226,7 +226,7 @@ def SA_DS(S, SA, n, K):
         if j > 0 and t[j] == 1 and t[j-1] == 0:
             bkt[S[j]] -= 1
             SA[bkt[S[j]]] = j
-    outputFile.write('Step 1: ' + str(SA) + '\n')
+    outputFile.write('Step 1: ' + str(SA) + '\n\n')
     
     getBuckets(S, bkt, n, K, 0)
     for i in xrange(n):
@@ -234,7 +234,7 @@ def SA_DS(S, SA, n, K):
         if j >= 0 and t[j] == 0:
             SA[bkt[S[j]]] = j
             bkt[S[j]] += 1
-    outputFile.write('Step 2: ' + str(SA) + '\n')
+    outputFile.write('Step 2: ' + str(SA) + '\n\n')
     
     getBuckets(S, bkt, n, K, 1)
     for i in xrange(n - 1, -1, -1):
@@ -242,7 +242,7 @@ def SA_DS(S, SA, n, K):
         if j >= 0 and t[j] == 1:
             bkt[S[j]] -= 1
             SA[bkt[S[j]]] = j
-    outputFile.write('Step 3: ' + str(SA) + '\n')
+    outputFile.write('Step 3: ' + str(SA) + '\n\n')
     
     del bkt, t, SA1, s1
 
@@ -262,10 +262,6 @@ else:
         if line[0] != '>':
             S.extend(line)
 
-    with open("EnteroBezKom.txt", "w") as ent:
-        for line in S:
-            ent.write(line)
-
     for i in xrange(len(S)):
         S[i] = ord(S[i])
     S.append(0)
@@ -276,8 +272,7 @@ else:
     outputFile = open(sys.argv[2], "w")
     SA_DS(S, SA, n, K)
     outputFile.close()    
-##    with open(sys.argv[2], "w") as outputFile:
-##        outputFile.write(', '.join(str(x) for x in SA))
+
 end = time.clock()
 print 'Time elapsed (in seconds): ', end - start
 
