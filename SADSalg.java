@@ -3,6 +3,7 @@ package bioinf.projekt;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,14 +11,16 @@ import java.util.List;
 public class SADSalg {
 
 	/**
-	 *
+	 * main program. opens file, runs the algorithm then writes the result array
+	 * to new file.
+	 * 
 	 * @param args
+	 *            input file, output file
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
 
 		long startTime = System.nanoTime();
-		// ... the code being measured ...
 
 		int K = 255, n = 0;
 		String genom = null;
@@ -25,7 +28,7 @@ public class SADSalg {
 		char[] s = null;
 		int[] sInt = null;
 
-		BufferedReader br = new BufferedReader(new FileReader("string.txt"));
+		BufferedReader br = new BufferedReader(new FileReader(args[0]));
 		try {
 			StringBuilder sb = new StringBuilder();
 			String line = br.readLine();
@@ -39,15 +42,18 @@ public class SADSalg {
 				line = br.readLine();
 			}
 			genom = sb.toString();
-			System.out.println(genom);
-			genom = genom.substring(0, genom.length() - 1);
-			n = genom.length();
+			genom = genom.replace("\n", "").replace("\r", "");
+			// System.out.println(genom.length());
+			// genom = genom.substring(0, genom.length() - 1);
+			n = genom.length() + 1;
 			sa = new int[n];
 			s = genom.toCharArray();
+			// System.out.println(Arrays.toString(s));
 			sInt = new int[n];
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n - 1; i++) {
 				sInt[i] = s[i];
 			}
+			sInt[n - 1] = 0;
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -56,9 +62,15 @@ public class SADSalg {
 
 		sa = sads(sInt, sa, n, K);
 
+		String result = Arrays.toString(sa);
+
+		PrintWriter out = new PrintWriter(args[1]);
+
+		out.println(result);
+
 		// TODO write to file
 		long estimatedTime = System.nanoTime() - startTime;
-		System.out.println("Estimated time: " + estimatedTime / 10000000.0 + "s");
+		System.out.println("Estimated time: " + estimatedTime / 1000000000.0 + "s");
 	}
 
 	/**
@@ -71,43 +83,44 @@ public class SADSalg {
 	 */
 	public static int[] sads(int[] sInt, int[] sa, int n, int k) {
 
-		System.out.println("Beginning");
-		System.out.println("-------------------------");
-		System.out.println("S:" + Arrays.toString(sInt));
-		System.out.println("SA: " + Arrays.toString(sa));
-		System.out.println("n: " + n);
-		System.out.println("K: " + k);
+		// System.out.println("Beginning");
+		// System.out.println("-------------------------");
+		// System.out.println("S:" + Arrays.toString(sInt));
+		// // System.out.println(sInt.length);
+		// System.out.println("SA: " + Arrays.toString(sa));
+		// System.out.println("n: " + n);
+		// System.out.println("K: " + k);
 
 		boolean[] t = scanSLtype(sInt);
-		System.out.println("t: " + Arrays.toString(t));
+		// System.out.println("t: " + Arrays.toString(t));
 
 		sa = new int[sa.length];
 		int[] sa1 = sa;
 		sa1 = findDCriticalSubstrings(t); // d=2
 		int n1 = sa1.length;
 
-		System.out.println("SA1: " + Arrays.toString(sa1));
+		// System.out.println("SA1: " + Arrays.toString(sa1));
 
 		int[] s1 = new int[n1];
 
 		int[] bucket = new int[k + 1];
 
 		s1 = bucketSortLS(sa1, s1, sInt, t, n, n1, 3);
-		System.out.println("---------------------------------");
-		System.out.println("LS pass: " + Arrays.toString(s1));
+		// System.out.println("---------------------------------");
+		// System.out.println("LS pass: " + Arrays.toString(s1));
 
 		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 3);
-		System.out.println("Pass 1: " + Arrays.toString(sa1));
+		// System.out.println("Pass 1: " + Arrays.toString(sa1));
 
 		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 2);
-		System.out.println("Pass 2: " + Arrays.toString(s1));
+		// System.out.println("Pass 2: " + Arrays.toString(s1));
 
 		sa1 = bucketSort(s1, sa1, sInt, t, n, n1, k, bucket, 1);
-		System.out.println("Pass 3: " + Arrays.toString(sa1));
+		// System.out.println("Pass 3: " + Arrays.toString(sa1));
 
 		s1 = bucketSort(sa1, s1, sInt, t, n, n1, k, bucket, 0);
-		System.out.println("Pass 4: " + Arrays.toString(s1));
-		System.out.println("----------------------------");
+		// System.out.println("Pass 4: " + Arrays.toString(s1));
+		// System.out.println("----------------------------");
 
 		// fill SA array with last two sorted d-crit arrays
 		// System.arraycopy(sa1, 0, sa, 0, sa1.length);
@@ -196,7 +209,7 @@ public class SADSalg {
 		}
 
 
-		System.out.println("sa: " + Arrays.toString(sa));
+		// System.out.println("sa: " + Arrays.toString(sa));
 
 		// copy names in new array (s1)
 		int i = (n / 2) * 2 - 1;
@@ -210,12 +223,12 @@ public class SADSalg {
 		}
 		s1 = Arrays.copyOfRange(sa, n - n1, n);
 		// System.arraycopy(sa, n - n1 + 1, s1, 0, (n - n1 - 1));
-		System.out.println("s1: " + Arrays.toString(s1));
+		// System.out.println("s1: " + Arrays.toString(s1));
 
 		if (name < n1) {
-			System.out.println("Recursion:");
+			// System.out.println("Recursion:");
 			sa1 = sads(s1, sa1, n1, name - 1);
-			System.out.println("Recursion end!");
+			// System.out.println("Recursion end!");
 		} else {
 			for (i = 0; i < n1; i++) {
 				sa1[s1[i]] = i;
@@ -224,8 +237,8 @@ public class SADSalg {
 		System.arraycopy(s1, 0, sa, 0, s1.length);
 		System.arraycopy(sa1, 0, sa, sa.length - n1, sa1.length);
 
-		System.out.println("sa1: " + Arrays.toString(sa1));
-		System.out.println("Inducing SA:");
+		// System.out.println("sa1: " + Arrays.toString(sa1));
+		// System.out.println("Inducing SA:");
 
 		s1 = findDCriticalSubstrings(t);
 		System.arraycopy(s1, 0, sa, sa.length - n1, s1.length);
@@ -250,7 +263,7 @@ public class SADSalg {
 				sa[bkt[sInt[j]]] = j;
 			}
 		}
-		System.out.println("Step 1: " + Arrays.toString(sa));
+		// System.out.println("Step 1: " + Arrays.toString(sa));
 
 		getBuckets(sInt, bkt, n, k, 0);
 		for (i = 0; i < n; i++) {
@@ -260,7 +273,7 @@ public class SADSalg {
 				bkt[sInt[j]]++;
 			}
 		}
-		System.out.println("Step 2: " + Arrays.toString(sa));
+		// System.out.println("Step 2: " + Arrays.toString(sa));
 
 		getBuckets(sInt, bkt, n, k, 1);
 		for (i = n - 1; i > -1; i--) {
@@ -270,7 +283,7 @@ public class SADSalg {
 				sa[bkt[sInt[j]]] = j;
 			}
 		}
-		System.out.println("Step 3: " + Arrays.toString(sa));
+		// System.out.println("Step 3: " + Arrays.toString(sa));
 
 		return sa;
 
@@ -368,8 +381,9 @@ public class SADSalg {
 				dCrit.add(i);
 			}
 		}
-
+		// if (dCritical[t.length - 3] && !dCritical[t.length - 1]) {
 		dCrit.add(t.length - 1);
+		// }
 
 		int[] sa1 = new int[dCrit.size()];
 		for (int i = 0; i < sa1.length; i++) {
