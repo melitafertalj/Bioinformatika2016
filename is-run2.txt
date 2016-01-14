@@ -1,0 +1,502 @@
+//time and memory calculations for original SA-DS code for d=2
+
+Computing suffix array by SA-DS on clo1.txt to clo1.dat
+d = 2
+Allocating input and output space: 730 bytes = 0.0007 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.46
+Level: 1
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.45
+Recursion ends
+Mean reduction ratio over iterations: 0.45
+Mean reduction ratio over characters: 0.46
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo1.txt, Size: 145 bytes, Memory: 0.5081 MB, Time: 0.0100 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo2.txt clo2.dat 2
+
+Computing suffix array by SA-DS on clo2.txt to clo2.dat
+d = 2
+Allocating input and output space: 2455 bytes = 0.0023 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.45
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo2.txt, Size: 490 bytes, Memory: 0.5125 MB, Time: 0.0140 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo3.txt clo3.dat 2
+
+Computing suffix array by SA-DS on clo3.txt to clo3.dat
+d = 2
+Allocating input and output space: 13115 bytes = 0.0125 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo3.txt, Size: 2622 bytes, Memory: 0.5338 MB, Time: 0.0480 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo4.txt clo4.dat 2
+
+Computing suffix array by SA-DS on clo4.txt to clo4.dat
+d = 2
+Allocating input and output space: 26655 bytes = 0.0254 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo4.txt, Size: 5330 bytes, Memory: 0.5549 MB, Time: 0.0520 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo5.txt clo5.dat 2
+
+Computing suffix array by SA-DS on clo5.txt to clo5.dat
+d = 2
+Allocating input and output space: 60135 bytes = 0.0573 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo5.txt, Size: 12026 bytes, Memory: 0.5958 MB, Time: 0.0510 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo6.txt clo6.dat 2
+
+Computing suffix array by SA-DS on clo6.txt to clo6.dat
+d = 2
+Allocating input and output space: 134535 bytes = 0.1283 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 1
+Time for sorting all the suffixes: 0.00 seconds
+Level: 0
+Time for sorting all the suffixes: 0.00 seconds
+File: clo6.txt, Size: 26906 bytes, Memory: 0.6765 MB, Time: 0.0560 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo7.txt clo7.dat 2
+
+Computing suffix array by SA-DS on clo7.txt to clo7.dat
+d = 2
+Allocating input and output space: 378195 bytes = 0.3607 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.03 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 2
+Time for sorting all the suffixes: 0.00 seconds
+Level: 1
+Time for sorting all the suffixes: 0.01 seconds
+Level: 0
+Time for sorting all the suffixes: 0.01 seconds
+File: clo7.txt, Size: 75638 bytes, Memory: 1.2551 MB, Time: 0.1070 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo8.txt clo8.dat 2
+
+Computing suffix array by SA-DS on clo8.txt to clo8.dat
+d = 2
+Allocating input and output space: 1363375 bytes = 1.3002 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.06 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.02 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.43
+Mean reduction ratio over characters: 0.44
+Level: 2
+Time for sorting all the suffixes: 0.01 seconds
+Level: 1
+Time for sorting all the suffixes: 0.01 seconds
+Level: 0
+Time for sorting all the suffixes: 0.03 seconds
+File: clo8.txt, Size: 272674 bytes, Memory: 3.0926 MB, Time: 0.1730 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo9.txt clo9.dat 2
+
+Computing suffix array by SA-DS on clo9.txt to clo9.dat
+d = 2
+Allocating input and output space: 2654215 bytes = 2.5313 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.08 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.04 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.02 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 3
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.42
+Recursion ends
+Mean reduction ratio over iterations: 0.43
+Mean reduction ratio over characters: 0.44
+Level: 3
+Time for sorting all the suffixes: 0.01 seconds
+Level: 2
+Time for sorting all the suffixes: 0.01 seconds
+Level: 1
+Time for sorting all the suffixes: 0.02 seconds
+Level: 0
+Time for sorting all the suffixes: 0.05 seconds
+File: clo9.txt, Size: 530842 bytes, Memory: 6.4910 MB, Time: 0.3150 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo10.txt clo10.dat 2
+
+Computing suffix array by SA-DS on clo10.txt to clo10.dat
+d = 2
+Allocating input and output space: 4576575 bytes = 4.3646 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.13 seconds
+Time for naming: 0.03 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.07 seconds
+Time for naming: 0.02 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.05 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.43
+Level: 3
+Time for sorting all the d-critical substrings: 0.02 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.42
+Recursion ends
+Mean reduction ratio over iterations: 0.43
+Mean reduction ratio over characters: 0.44
+Level: 3
+Time for sorting all the suffixes: 0.01 seconds
+Level: 2
+Time for sorting all the suffixes: 0.03 seconds
+Level: 1
+Time for sorting all the suffixes: 0.04 seconds
+Level: 0
+Time for sorting all the suffixes: 0.10 seconds
+File: clo10.txt, Size: 915314 bytes, Memory: 10.7798 MB, Time: 0.5240 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe clo11.txt clo11.dat 2
+
+Computing suffix array by SA-DS on clo11.txt to clo11.dat
+d = 2
+Allocating input and output space: 5166665 bytes = 4.9273 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.15 seconds
+Time for naming: 0.03 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.08 seconds
+Time for naming: 0.02 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.05 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.43
+Level: 3
+Time for sorting all the d-critical substrings: 0.02 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.42
+Recursion ends
+Mean reduction ratio over iterations: 0.43
+Mean reduction ratio over characters: 0.44
+Level: 3
+Time for sorting all the suffixes: 0.01 seconds
+Level: 2
+Time for sorting all the suffixes: 0.03 seconds
+Level: 1
+Time for sorting all the suffixes: 0.05 seconds
+Level: 0
+Time for sorting all the suffixes: 0.11 seconds
+File: clo11.txt, Size: 1033332 bytes, Memory: 12.0821 MB, Time: 0.5810 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe haemo.txt haemo.dat 2
+
+Computing suffix array by SA-DS on haemo.txt to haemo.dat
+d = 2
+Allocating input and output space: 8654685 bytes = 8.2538 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.21 seconds
+Time for naming: 0.04 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.14 seconds
+Time for naming: 0.04 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.09 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.43
+Level: 3
+Time for sorting all the d-critical substrings: 0.04 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.42
+Level: 4
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.47
+Level: 5
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 6
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 7
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 8
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.44
+Level: 9
+Time for sorting all the d-critical substrings: 0.00 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 9
+Time for sorting all the suffixes: 0.00 seconds
+Level: 8
+Time for sorting all the suffixes: 0.00 seconds
+Level: 7
+Time for sorting all the suffixes: 0.00 seconds
+Level: 6
+Time for sorting all the suffixes: 0.00 seconds
+Level: 5
+Time for sorting all the suffixes: 0.00 seconds
+Level: 4
+Time for sorting all the suffixes: 0.01 seconds
+Level: 3
+Time for sorting all the suffixes: 0.02 seconds
+Level: 2
+Time for sorting all the suffixes: 0.05 seconds
+Level: 1
+Time for sorting all the suffixes: 0.08 seconds
+Level: 0
+Time for sorting all the suffixes: 0.20 seconds
+File: haemo.txt, Size: 1730936 bytes, Memory: 22.1182 MB, Time: 1.0110 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
+
+C:\Projects\sa-ds\Test>is.exe entero.txt entero.dat 2
+
+Computing suffix array by SA-DS on entero.txt to entero.dat
+d = 2
+Allocating input and output space: 14520250 bytes = 13.8476 MB
+Reading input string...
+Level: 0
+Time for sorting all the d-critical substrings: 0.35 seconds
+Time for naming: 0.08 seconds
+Reduction ratio: 0.44
+Level: 1
+Time for sorting all the d-critical substrings: 0.28 seconds
+Time for naming: 0.07 seconds
+Reduction ratio: 0.43
+Level: 2
+Time for sorting all the d-critical substrings: 0.18 seconds
+Time for naming: 0.02 seconds
+Reduction ratio: 0.43
+Level: 3
+Time for sorting all the d-critical substrings: 0.09 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.42
+Level: 4
+Time for sorting all the d-critical substrings: 0.04 seconds
+Time for naming: 0.01 seconds
+Reduction ratio: 0.47
+Level: 5
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Level: 6
+Time for sorting all the d-critical substrings: 0.01 seconds
+Time for naming: 0.00 seconds
+Reduction ratio: 0.43
+Recursion ends
+Mean reduction ratio over iterations: 0.44
+Mean reduction ratio over characters: 0.44
+Level: 6
+Time for sorting all the suffixes: 0.00 seconds
+Level: 5
+Time for sorting all the suffixes: 0.01 seconds
+Level: 4
+Time for sorting all the suffixes: 0.02 seconds
+Level: 3
+Time for sorting all the suffixes: 0.04 seconds
+Level: 2
+Time for sorting all the suffixes: 0.10 seconds
+Level: 1
+Time for sorting all the suffixes: 0.16 seconds
+Level: 0
+Time for sorting all the suffixes: 0.33 seconds
+File: entero.txt, Size: 2904049 bytes, Memory: 36.7321 MB, Time: 1.8150 seconds
+
+Verifying the suffix array...
+Sorted: 1
+Outputing the suffix array...
+C:\Projects\sa-ds\Test>pause
+Press any key to continue . . .
