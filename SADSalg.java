@@ -1,5 +1,3 @@
-package bioinf.projekt;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,6 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SADSalg {
+
+	private static final long KILOBYTE = 1024L;
+
+	public static long bytesToKilobytes(long bytes) {
+		return bytes / KILOBYTE;
+	}
 
 	/**
 	 * main program. opens file, runs the algorithm then writes the result array
@@ -72,6 +76,15 @@ public class SADSalg {
 
 		long estimatedTime = System.nanoTime() - startTime;
 		System.out.println("Estimated time: " + estimatedTime / 1000000000.0 + "s");
+
+		// Get the Java runtime
+		Runtime runtime = Runtime.getRuntime();
+		// Run the garbage collector
+		runtime.gc();
+		// Calculate the used memory
+		long memory = runtime.totalMemory() - runtime.freeMemory();
+		// System.out.println("Used memory is bytes: " + memory);
+		System.out.println("Used memory is kilobytes: " + bytesToKilobytes(memory));
 	}
 
 	/**
